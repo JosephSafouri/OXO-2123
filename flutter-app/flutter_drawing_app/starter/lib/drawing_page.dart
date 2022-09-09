@@ -16,6 +16,15 @@ class _DrawingPageState extends State<DrawingPage> {
   DrawnLine line;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
+  List<Color> toolbarColors = [
+    Colors.red,
+    Colors.blueAccent,
+    Colors.deepOrange,
+    Colors.green,
+    Colors.lightBlue,
+    Colors.black,
+    Colors.white,
+  ];
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController = StreamController<DrawnLine>.broadcast();
@@ -123,13 +132,7 @@ class _DrawingPageState extends State<DrawingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          buildColorButton(Colors.red),
-          buildColorButton(Colors.blueAccent),
-          buildColorButton(Colors.deepOrange),
-          buildColorButton(Colors.green),
-          buildColorButton(Colors.lightBlue),
-          buildColorButton(Colors.black),
-          buildColorButton(Colors.white),
+          for (Color color in toolbarColors) buildColorButton(color)
         ],
       ),
     );
@@ -198,8 +201,8 @@ class _DrawingPageState extends State<DrawingPage> {
                     //topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
           ),
-        buildColorToolbar(),
-        buildCurrentPath(context),
+          buildCurrentPath(context),
+          buildColorToolbar(),
         ],
       ),
     );
