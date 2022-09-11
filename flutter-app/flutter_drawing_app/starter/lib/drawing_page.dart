@@ -23,7 +23,6 @@ class _DrawingPageState extends State<DrawingPage> {
     Colors.green,
     Colors.lightBlue,
     Colors.black,
-    Colors.white,
   ];
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
@@ -182,14 +181,15 @@ class _DrawingPageState extends State<DrawingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double _width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.yellow[50],
+      backgroundColor: Colors.white10,
       body: Stack(
 
         children: <Widget>[
           Container(
             //height: 400.4,
-            width: double.infinity,
+            width: 0.95 * _width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
 
             decoration: BoxDecoration(
                 image: DecorationImage(
