@@ -31,16 +31,17 @@ class _DrawingPageState extends State<DrawingPage> {
   Future<void> save() async {
     // TODO
   }
-
+  
   Future<void> clear() async {
     setState(() {
       lines = [];
       line = null;
     });
   }
-
+  
   void onPanStart(DragStartDetails details) {
     // TODO
+    //print user has begun drawing 
     print('User has begun drawing');
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
