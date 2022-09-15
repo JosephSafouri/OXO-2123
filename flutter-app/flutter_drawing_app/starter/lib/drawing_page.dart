@@ -107,7 +107,15 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   Widget buildStrokeToolbar() {
-    // TODO
+    return Positioned(
+      bottom: 100.0,
+      right: 10.0,
+      child: Column(
+        children: [
+          buildStrokeButton(5.0),
+        ],
+      )
+    );
   }
 
   Widget buildStrokeButton(double strokeWidth) {
@@ -206,6 +214,7 @@ class _DrawingPageState extends State<DrawingPage> {
           ),
           buildCurrentPath(context),
           buildColorToolbar(),
+          buildStrokeToolbar(),
         ],
       ),
     );
