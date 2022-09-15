@@ -23,6 +23,8 @@ class _DrawingPageState extends State<DrawingPage> {
     Colors.green,
     Colors.lightBlue,
     Colors.black,
+    Colors.cyanAccent,
+    Colors.pinkAccent
   ];
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
