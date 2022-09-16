@@ -12,5 +12,6 @@ Rishi Chillara</br>
 - Note that Android Studio is not needed to just run the app
 - Pull main branch from repository
 - cd into the `flutter-app/flutter_drawing_app/starter/` directory and run `flutter run` in the command line
+- Chrome tab should open up and display the running app
 
 ![logo-1](https://user-images.githubusercontent.com/70985186/154367134-4963a12a-ed37-4089-8d87-2db25e7b9c9c.svg)
