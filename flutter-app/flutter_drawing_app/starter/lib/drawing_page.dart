@@ -113,6 +113,8 @@ class _DrawingPageState extends State<DrawingPage> {
       child: Column(
         children: [
           buildStrokeButton(5.0),
+          buildStrokeButton(10.0),
+          buildStrokeButton(17.0),
         ],
       )
     );
