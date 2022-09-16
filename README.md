@@ -6,4 +6,11 @@ Sarah Ukani </br>
 Praharsh Patel </br>
 Rishi Chillara</br>
 
+#### Instructions to run app
+- [Install Flutter](https://docs.flutter.dev/get-started/install)
+- Use [Mac Installation Guide](https://docs.flutter.dev/get-started/install/macos) or [Windows Installation Guide](https://docs.flutter.dev/get-started/install/windows)
+- Note that Android Studio is not needed to just run the app
+- Pull main branch from repository
+- cd into starter/ directory and run `flutter run` in the command line
+
 ![logo-1](https://user-images.githubusercontent.com/70985186/154367134-4963a12a-ed37-4089-8d87-2db25e7b9c9c.svg)
