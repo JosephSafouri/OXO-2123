@@ -16,6 +16,7 @@ class _DrawingPageState extends State<DrawingPage> {
   DrawnLine line;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
+  bool strokeWidthIsClicked = false;
   List<Color> toolbarColors = [
     Colors.red,
     Colors.blueAccent,
@@ -124,13 +125,16 @@ class _DrawingPageState extends State<DrawingPage> {
     return GestureDetector(
       onTap: () {
         selectedWidth = strokeWidth;
+        setState(() {
+          strokeWidthIsClicked = !strokeWidthIsClicked;
+        });
       },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
           width: strokeWidth * 2,
           height: strokeWidth * 2,
-          decoration: BoxDecoration(color: selectedColor, borderRadius: BorderRadius.circular(20.0)),
+          decoration: BoxDecoration(color: selectedColor, borderRadius: BorderRadius.circular(20.0), border: Border.all(style: strokeWidthIsClicked ? BorderStyle.solid : BorderStyle.none)),
         ),
       ),
     );
