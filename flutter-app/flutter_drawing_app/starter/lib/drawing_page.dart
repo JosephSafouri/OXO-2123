@@ -14,6 +14,7 @@ class _DrawingPageState extends State<DrawingPage> {
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line;
+  //img
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
   bool strokeWidthIsClicked = false;
@@ -107,6 +108,8 @@ class _DrawingPageState extends State<DrawingPage> {
     // TODO
   }
 
+
+
   Widget buildStrokeToolbar() {
     return Positioned(
       bottom: 100.0,
@@ -148,11 +151,29 @@ class _DrawingPageState extends State<DrawingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          for (Color color in toolbarColors) buildColorButton(color)
+          for (Color color in toolbarColors) buildColorButton(color),
+          buildLineButton()
         ],
       ),
     );
   }
+  
+  Widget buildLineButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.black,
+        child: Icon(Icons.create_rounded),
+        // onPressed: () {
+        //   setState(() {
+        //     selectedColor = color;
+        //   });
+        // },
+      ),
+    );
+  }
+
 
   Widget buildColorButton(Color color) {
     return Padding(
