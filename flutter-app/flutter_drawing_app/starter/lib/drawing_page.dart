@@ -5,6 +5,12 @@ import 'package:drawing_app/sketcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+ enum Status {
+    none,
+    color,
+    linedrawing,
+  }
+
 class DrawingPage extends StatefulWidget {
   @override
   _DrawingPageState createState() => _DrawingPageState();
@@ -15,6 +21,7 @@ class _DrawingPageState extends State<DrawingPage> {
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line;
   //img
+  Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
   bool strokeWidthIsClicked = false;
@@ -50,6 +57,7 @@ class _DrawingPageState extends State<DrawingPage> {
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
 
+    //TODO(RC & SU): CHECK FOR TOOLBAR STATE BEFORE DECIDING WHAT TO DRAW
     setState(() {
       line = DrawnLine([point], selectedColor, selectedWidth);
     });
@@ -63,6 +71,7 @@ class _DrawingPageState extends State<DrawingPage> {
     line = DrawnLine(path, selectedColor, selectedWidth);
 
     setState(() {
+
       if (lines.length == 0) {
         lines.add(line);
       } else {
@@ -165,11 +174,11 @@ class _DrawingPageState extends State<DrawingPage> {
         mini: true,
         backgroundColor: Colors.black,
         child: Icon(Icons.create_rounded),
-        // onPressed: () {
-        //   setState(() {
-        //     selectedColor = color;
-        //   });
-        // },
+        onPressed: () {
+          setState(() {
+            state = Status.linedrawing;
+          });
+        },
       ),
     );
   }
@@ -184,6 +193,7 @@ class _DrawingPageState extends State<DrawingPage> {
         child: Container(),
         onPressed: () {
           setState(() {
+            state = Status.color;
             selectedColor = color;
           });
         },
