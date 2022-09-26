@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
     none,
     color,
     linedrawing,
+    upload_image
   }
 
 class DrawingPage extends StatefulWidget {
@@ -161,7 +162,7 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton()
+          buildLineButton(), buildUploadButton()
         ],
       ),
     );
@@ -173,7 +174,7 @@ class _DrawingPageState extends State<DrawingPage> {
       child: FloatingActionButton(
         mini: true,
         backgroundColor: selectedColor,
-        child: Icon(Icons.create_rounded),
+        child:Icon(Icons.create_rounded),
         onPressed: () {
           setState(() {
             state = Status.linedrawing;
@@ -183,6 +184,21 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+Widget buildUploadButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.black,
+        child:Icon(Icons.add_to_photos),
+        onPressed: () {
+          setState(() {
+            state = Status.upload_image;
+          });
+        },
+      ),
+    );
+  }
 
   Widget buildColorButton(Color color) {
     return Padding(
