@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:drawing_app/drawn_line.dart';
 import 'package:drawing_app/sketcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
  enum Status {
     none,
     color,
@@ -18,9 +20,11 @@ class DrawingPage extends StatefulWidget {
 }
 
 class _DrawingPageState extends State<DrawingPage> {
+  ImagePicker picker = ImagePicker();
+  File? displayImage;
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
-  DrawnLine line;
+  DrawnLine line = DrawnLine([], Colors.white, 0);
   //img
   Status state = Status.none;
   Color selectedColor = Colors.red;
@@ -47,9 +51,30 @@ class _DrawingPageState extends State<DrawingPage> {
   Future<void> clear() async {
     setState(() {
       lines = [];
-      line = null;
+      line = DrawnLine([], Colors.white, 0);
     });
   }
+  
+
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+        if(image == null) {
+          return;
+        }
+      final imageTemp = File(image.path);
+      
+      setState(() => this.displayImage = imageTemp);
+      } on PlatformException catch(e) {
+        print('Failed to pick image: $e');
+      }
+   }
+
+
+
+
+
   
   void onPanStart(DragStartDetails details) {
     // TODO
@@ -114,9 +139,9 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  Widget buildAllPaths(BuildContext context) {
-    // TODO
-  }
+  // Widget buildAllPaths(BuildContext context) {
+  //   // TODO
+  // }
 
 
 
@@ -192,13 +217,11 @@ Widget buildUploadButton() {
         backgroundColor: Colors.black,
         child:Icon(Icons.add_to_photos),
         onPressed: () {
-          setState(() {
-            state = Status.upload_image;
-          });
-        },
-      ),
-    );
+          pickImage();
+         }
+      ));
   }
+
 
   Widget buildColorButton(Color color) {
     return Padding(
@@ -243,28 +266,50 @@ Widget buildUploadButton() {
     );
   }
 
+  Widget determineDisplayContent(double width, double height) {
+    if (displayImage != null) {
+      if (kIsWeb) {
+        return Container(
+        width: 0.95 * width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
+        child: 
+        Image.network(
+            displayImage!.path,
+            fit: BoxFit.fill
+          )   
+      );
+      } else {
+        //TO DO: default sizing is wrong 
+      return Container(
+        width: 0.95 * width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
+        child: 
+        Image.file(
+            displayImage!,
+            fit: BoxFit.fill
+          )   
+      );
+      } 
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.red[200]
+      ),
+      width: width,
+      height: height,
+    );
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white10,
       body: Stack(
-
         children: <Widget>[
-          Container(
-            //height: 400.4,
-            width: 0.95 * _width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
-
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: AssetImage("images/hand-xray.jpeg"),
-                ),
-                color: Colors.amberAccent,
-                borderRadius: BorderRadius.only(
-                    //topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
-          ),
+          determineDisplayContent(_width, _height)
+          ,
           buildCurrentPath(context),
           buildColorToolbar(),
           buildStrokeToolbar(),
@@ -280,3 +325,5 @@ Widget buildUploadButton() {
     super.dispose();
   }
 }
+
+
