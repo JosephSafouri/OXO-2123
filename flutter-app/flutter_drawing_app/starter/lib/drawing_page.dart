@@ -51,7 +51,7 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }
   
-  void onPanStart(DragStartDetails details) {
+  void beginLineDraw(DragStartDetails details) {
     // TODO
     //print user has begun drawing 
     print('User has begun drawing');
@@ -64,7 +64,7 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }
 
-  void onPanUpdate(DragUpdateDetails details) {
+  void lineDrawUpdate(DragUpdateDetails details) {
     // TODO
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
@@ -81,7 +81,7 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }
 
-  void onPanEnd(DragEndDetails details) {
+  void lineDrawEnd(DragEndDetails details) {
     // TODO
     setState(() {
       print('User has ended drawing');
@@ -89,7 +89,7 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }
 
-  void onDoubleTap() {
+  void erase() {
     // Annotations should be cleared after double tap on screen
     clear();
   }
@@ -97,10 +97,10 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget buildCurrentPath(BuildContext context) {
     // TODO
     return GestureDetector(
-      onPanStart: onPanStart,
-      onPanUpdate: onPanUpdate,
-      onPanEnd: onPanEnd,
-      onDoubleTap: onDoubleTap,
+      onPanStart: beginLineDraw,
+      onPanUpdate: lineDrawUpdate,
+      onPanEnd: lineDrawEnd,
+      onDoubleTap: erase,
       child: RepaintBoundary(
         child: Container(
           color: Colors.transparent,
