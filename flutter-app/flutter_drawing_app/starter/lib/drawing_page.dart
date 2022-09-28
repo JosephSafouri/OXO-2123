@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
- enum Status {
-    none,
-    color,
-    linedrawing,
-    upload_image
-  }
+ 
+// Status keeps track of what action the user is trying to execute, default to none on start
+enum Status {
+  none,
+  color,
+  linedrawing,
+  upload_image
+}
 
 class DrawingPage extends StatefulWidget {
   @override
@@ -25,11 +27,12 @@ class _DrawingPageState extends State<DrawingPage> {
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line = DrawnLine([], Colors.white, 0);
-  //img
+  
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
   bool strokeWidthIsClicked = false;
+
   List<Color> toolbarColors = [
     Colors.red,
     Colors.blueAccent,
@@ -70,50 +73,50 @@ class _DrawingPageState extends State<DrawingPage> {
    }
 
   void beginLineDraw(DragStartDetails details) {
-    // TODO
-    //print user has begun drawing 
     print('User has begun drawing');
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
 
     //TODO(RC & SU): CHECK FOR TOOLBAR STATE BEFORE DECIDING WHAT TO DRAW
     setState(() {
-      line = DrawnLine([point], selectedColor, selectedWidth);
+      if (state == Status.color) {
+        line = DrawnLine([point], selectedColor, selectedWidth);
+      }
     });
   }
 
   void lineDrawUpdate(DragUpdateDetails details) {
-    // TODO
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
     final path = List.from(line.path)..add(point);
     line = DrawnLine(path, selectedColor, selectedWidth);
 
     setState(() {
-
-      if (lines.length == 0) {
-        lines.add(line);
-      } else {
-        lines[lines.length - 1] = line;
+      if (state == Status.color) {
+        if (lines.length == 0) {
+          lines.add(line);
+        } else {
+          lines[lines.length - 1] = line;
+        }
       }
     });
   }
 
   void lineDrawEnd(DragEndDetails details) {
-    // TODO
     setState(() {
-      print('User has ended drawing');
-      lines.add(line);
+      if (state == Status.color) {
+        print('User has ended drawing');
+        lines.add(line);
+      }
     });
   }
 
+  // Annotations should be cleared after double tap on screen
   void erase() {
-    // Annotations should be cleared after double tap on screen
     clear();
   }
 
   Widget buildCurrentPath(BuildContext context) {
-    // TODO
     return GestureDetector(
       onPanStart: beginLineDraw,
       onPanUpdate: lineDrawUpdate,
@@ -131,12 +134,6 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
-
-  // Widget buildAllPaths(BuildContext context) {
-  //   // TODO
-  // }
-
-
 
   Widget buildStrokeToolbar() {
     return Positioned(
@@ -215,7 +212,6 @@ Widget buildUploadButton() {
       ));
   }
 
-
   Widget buildColorButton(Color color) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -271,9 +267,9 @@ Widget buildUploadButton() {
           )   
       );
       } else {
-        //TO DO: default sizing is wrong 
+        //TODO: default sizing is wrong 
       return Container(
-        width: 0.95 * width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
+        width: 0.95 * width,
         child: 
         Image.file(
             displayImage!,
