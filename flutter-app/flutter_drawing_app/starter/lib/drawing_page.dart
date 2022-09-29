@@ -77,9 +77,8 @@ class _DrawingPageState extends State<DrawingPage> {
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
 
-    //TODO(RC & SU): CHECK FOR TOOLBAR STATE BEFORE DECIDING WHAT TO DRAW
     setState(() {
-      if (state == Status.color) {
+      if (state == Status.color || state == Status.linedrawing) {
         line = DrawnLine([point], selectedColor, selectedWidth);
       }
     });
@@ -88,23 +87,32 @@ class _DrawingPageState extends State<DrawingPage> {
   void lineDrawUpdate(DragUpdateDetails details) {
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
-    final path = List.from(line.path)..add(point);
-    line = DrawnLine(path, selectedColor, selectedWidth);
+
+    final path = List.from(line.path);
 
     setState(() {
-      if (state == Status.color) {
-        if (lines.length == 0) {
-          lines.add(line);
+      if (state == Status.linedrawing) {
+        if (path.length <= 1) {
+          path.add(point);
         } else {
-          lines[lines.length - 1] = line;
+          path[1] = point;
         }
+      } else if (state == Status.color) {
+        path.add(point);
+      }
+      line = DrawnLine(path, selectedColor, selectedWidth);
+
+      if (lines.length == 0) {
+        lines.add(line);
+      } else {
+        lines[lines.length - 1] = line;
       }
     });
   }
 
   void lineDrawEnd(DragEndDetails details) {
     setState(() {
-      if (state == Status.color) {
+      if (state == Status.color || state == Status.linedrawing) {
         print('User has ended drawing');
         lines.add(line);
       }
