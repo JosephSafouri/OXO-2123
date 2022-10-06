@@ -286,12 +286,16 @@ Widget buildUploadButton() {
       );
       } 
     }
+    //
     return Container(
+      width: 0.95 * width,
       decoration: BoxDecoration(
-        color: Colors.red[200]
+        image: DecorationImage(
+          fit: BoxFit.fill,
+          image: AssetImage("images/hand-xray.jpeg"),
+        //color: Colors.white,
       ),
-      width: width,
-      height: height,
+      ),
     );
     
   }
