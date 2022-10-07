@@ -219,7 +219,7 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton()
+          buildLineButton(), buildUploadButton(), buildPointButton()
         ],
       ),
     );
@@ -309,8 +309,7 @@ Widget buildUploadButton() {
           )   
       );
       } else {
-        //TODO: default sizing is wrong 
-      return Container(
+      return Container( 
         width: 0.95 * width,
         child: 
         Image.file(
@@ -327,7 +326,20 @@ Widget buildUploadButton() {
       width: width,
       height: height,
     );
-    
+  }
+    /*
+    * TODO: Unfinished skeleton of the point button.
+    */
+    Widget buildPointButton() {
+    return GestureDetector(
+      child: CircleAvatar(
+        child: Icon(
+          Icons.add_circle,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   @override
