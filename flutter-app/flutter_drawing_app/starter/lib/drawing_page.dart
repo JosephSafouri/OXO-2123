@@ -119,6 +119,10 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }
 
+  void textFieldBegin() {
+    //TODO
+  }
+
   // Annotations should be cleared after double tap on screen
   void erase() {
     clear();
