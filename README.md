@@ -37,4 +37,23 @@ Praharsh Patel </br>
     <li> Straight line drawing </li>
 </ul>
 
+## Version 0.2.0
+### Features
+<ul>
+    <li> Added a button to allow drawing a straight line</li>
+    <li> Added a button to allow the user to select an image</li>
+    <li> Added ability to detect whether the file is an image type or not</li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> <em>No bug fixes</em> </li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> Image uploading only throws an error rather than promt the user to select a different file.</li>
+    <li> The ability to drop a point does not function but has a button.</li>
+    <li> The ability to implement a textbox within the canvas does not function.</li>
+</ul>
 
