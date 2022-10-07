@@ -47,9 +47,9 @@ Praharsh Patel </br>
 
 ### Bug Fixes
 <ul>
-    <li> <em>Image and tool bar are seprate, but previosly they were overlapping.</em> </li>
-    <li> <em>The background was defaulted to yellow but now is white.</em> </li>
-    <li> <em>The width of the images wasn't the correct size type, but now is.</em> </li>
+    <li> Image and tool bar are seprate, but previosly they were overlapping. </li>
+    <li> The background was defaulted to yellow but now is white. </li>
+    <li> The width of the images wasn't the correct size type, but now is.</li>
 </ul>
 
 ### Known Issues
