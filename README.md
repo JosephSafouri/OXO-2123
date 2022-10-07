@@ -54,7 +54,7 @@ Praharsh Patel </br>
 
 ### Known Issues
 <ul>
-    <li> Image uploading only throws an error rather than promt the user to select a different file.</li>
+    <li> Image uploading only throws an error rather than prompt the user to select a different file.</li>
     <li> The ability to drop a point does not function but has a button.</li>
     <li> The ability to implement a textbox within the canvas does not function.</li>
     <li> We are allowed to draw on the toolbar which we do not want.</li>
