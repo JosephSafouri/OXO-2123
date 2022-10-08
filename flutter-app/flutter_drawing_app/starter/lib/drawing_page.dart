@@ -247,7 +247,10 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
-
+/*
+  This is the button widget for the upload image feature.
+  It is added on the tool bar.
+  */
 Widget buildUploadButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
