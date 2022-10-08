@@ -37,4 +37,26 @@ Praharsh Patel </br>
     <li> Straight line drawing </li>
 </ul>
 
+## Version 0.2.0
+### Features
+<ul>
+    <li> Added a button to allow drawing a straight line</li>
+    <li> Added a button to allow the user to select an image</li>
+    <li> Added ability to detect whether the file is an image type or not</li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> Image and tool bar are seprate, but previosly they were overlapping. </li>
+    <li> The background was defaulted to yellow but now is white. </li>
+    <li> The width of the images wasn't the correct size type, but now is.</li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> Image uploading only throws an error rather than prompt the user to select a different file.</li>
+    <li> The ability to drop a point does not function but has a button.</li>
+    <li> The ability to implement a textbox within the canvas does not function.</li>
+    <li> We are allowed to draw on the toolbar which we do not want.</li>
+</ul>
 
