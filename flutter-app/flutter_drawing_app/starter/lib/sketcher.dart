@@ -1,6 +1,10 @@
 import 'package:drawing_app/drawn_line.dart';
 import 'package:flutter/material.dart';
-
+///
+/// Sketcher is a class that extends CustomPainter and is 
+/// used in combination with the CustomPaint to draw on the screen. 
+/// This class contains the logic to draw DrawnLines on the screen.
+///
 class Sketcher extends CustomPainter {
   final List<DrawnLine> lines;
 
