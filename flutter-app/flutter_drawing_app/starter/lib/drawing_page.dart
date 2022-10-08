@@ -260,6 +260,10 @@ Widget buildUploadButton() {
          }
       ));
   }
+  /*
+  This is the button widget for the text field feature.
+  It is added on the tool bar.
+  */
 
   Widget buildTextFieldButton() {
     return Padding(
