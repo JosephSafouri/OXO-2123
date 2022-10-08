@@ -20,7 +20,11 @@ class DrawingPage extends StatefulWidget {
   @override
   _DrawingPageState createState() => _DrawingPageState();
 }
-
+/*
+* This renders the canvas to have the drawing state containing
+* the toolbar with all the types of colors in the list,
+* the image selector button, and setting all the default variables.
+*/
 class _DrawingPageState extends State<DrawingPage> {
   ImagePicker picker = ImagePicker();
   File? displayImage;
@@ -46,18 +50,32 @@ class _DrawingPageState extends State<DrawingPage> {
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController = StreamController<DrawnLine>.broadcast();
-
+  /*
+  * This will allow the user to be able to save
+  * the image that is being displayed whether there
+  * are lines on the image or just itself.
+  * That'll allow the potential users to also send an
+  * already annotated image instead of the base canvas if
+  * they annotate it.
+  */
   Future<void> save() async {
     // TODO
   }
-  
+  /*
+  * This will let the user clear the page of all notations
+  * if it the canvas was modified in a way they do not like.
+  */
   Future<void> clear() async {
     setState(() {
       lines = [];
       line = DrawnLine([], Colors.white, 0);
     });
   }
-  
+  /*
+  * This allows the user to pick an image file type
+  * and set it as the canvas background to allow them
+  * to annotate any image they want.
+  */
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -72,6 +90,14 @@ class _DrawingPageState extends State<DrawingPage> {
       }
    }
 
+  /*
+  * This method allows the user to begin drawing a line by
+  * using two variables which track the user's input and 
+  * where the user's input is happening relative to their
+  * resolution. The setState() checks which drawing mode
+  * the user is in and adds a line that is being drawn depending
+  * on the color and mode it is in.
+  */
   void beginLineDraw(DragStartDetails details) {
     print('User has begun drawing');
     final box = context.findRenderObject() as RenderBox;
@@ -83,7 +109,12 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
-
+ /*
+ * This method does a similar thing to the previous method
+ * but has a variable that contains a list of points that
+ * the user has made. This updates the dynamic line from a 
+ * different class.
+ */
   void lineDrawUpdate(DragUpdateDetails details) {
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
@@ -109,7 +140,10 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
-
+ /*
+ * This method tells the system when the user has let go of the 
+ * drawing something on the canvas and adds it to the list of lines.
+ */
   void lineDrawEnd(DragEndDetails details) {
     setState(() {
       if (state == Status.color || state == Status.linedrawing) {
@@ -117,6 +151,10 @@ class _DrawingPageState extends State<DrawingPage> {
         lines.add(line);
       }
     });
+  }
+
+  void textFieldBegin() {
+    //TODO
   }
 
   // Annotations should be cleared after double tap on screen
@@ -185,7 +223,7 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton(), buildTextFieldButton()
+          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton()
         ],
       ),
     );
@@ -290,8 +328,7 @@ Widget buildUploadButton() {
           )   
       );
       } else {
-        //TODO: default sizing is wrong 
-      return Container(
+      return Container( 
         width: 0.95 * width,
         child: 
         Image.file(
@@ -312,7 +349,20 @@ Widget buildUploadButton() {
       ),
       ),
     );
-    
+  }
+    /*
+    * TODO: Unfinished skeleton of the point button.
+    */
+    Widget buildPointButton() {
+    return GestureDetector(
+      child: CircleAvatar(
+        child: Icon(
+          Icons.add_circle,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   @override
