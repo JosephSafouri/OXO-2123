@@ -153,7 +153,9 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
-
+  /*
+  This method begins adding the text field on an X-ray image.
+  */
   void textFieldBegin() {
     //TODO
   }
