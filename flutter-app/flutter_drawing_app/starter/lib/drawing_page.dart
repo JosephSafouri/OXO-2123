@@ -223,7 +223,7 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton(), buildPointButton()
+          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton()
         ],
       ),
     );
@@ -256,6 +256,21 @@ Widget buildUploadButton() {
           pickImage();
          }
       ));
+  }
+
+  Widget buildTextFieldButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: selectedColor,
+        onPressed: () {
+          setState(() {
+            state = Status.none;
+          });
+        },
+      ),
+    );
   }
 
   Widget buildColorButton(Color color) {
