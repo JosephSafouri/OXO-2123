@@ -13,7 +13,8 @@ enum Status {
   none,
   color,
   linedrawing,
-  upload_image
+  upload_image,
+  text_field //adds a text field state 
 }
 
 class DrawingPage extends StatefulWidget {
