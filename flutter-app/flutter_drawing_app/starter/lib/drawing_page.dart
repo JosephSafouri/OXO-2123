@@ -198,6 +198,7 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  //TODO: Make Stroke width expand horizontally not vertically
   Widget buildStrokeButton(double strokeWidth) {
     return GestureDetector(
       onTap: () {
@@ -241,7 +242,9 @@ class _DrawingPageState extends State<DrawingPage> {
         child:Icon(Icons.create_rounded),
         onPressed: () {
           setState(() {
-            state = Status.line_drawing;
+            if (displayImage != null) {
+              state = Status.line_drawing;
+            }
           });
         },
       ),
@@ -292,8 +295,12 @@ Widget buildUploadButton() {
         child: Container(),
         onPressed: () {
           setState(() {
-            state = Status.free_draw;
-            selectedColor = color;
+            // No drawing until an image is selected
+            //TODO: Display a popup telling the user to upload an image if drawing is attempted.
+            if (displayImage != null) {
+              state = Status.free_draw;
+              selectedColor = color;
+            }
           });
         },
       ),
