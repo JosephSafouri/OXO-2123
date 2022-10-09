@@ -11,8 +11,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 // Status keeps track of what action the user is trying to execute, default to none on start
 enum Status {
   none,
-  color,
-  linedrawing,
+  free_draw,
+  line_drawing,
   upload_image,
   text_field //adds a text field state 
 }
@@ -105,7 +105,7 @@ class _DrawingPageState extends State<DrawingPage> {
     final point = box.globalToLocal(details.globalPosition);
 
     setState(() {
-      if (state == Status.color || state == Status.linedrawing) {
+      if (state == Status.free_draw || state == Status.line_drawing) {
         line = DrawnLine([point], selectedColor, selectedWidth);
       }
     });
@@ -123,13 +123,13 @@ class _DrawingPageState extends State<DrawingPage> {
     final path = List.from(line.path);
 
     setState(() {
-      if (state == Status.linedrawing) {
+      if (state == Status.line_drawing) {
         if (path.length <= 1) {
           path.add(point);
         } else {
           path[1] = point;
         }
-      } else if (state == Status.color) {
+      } else if (state == Status.free_draw) {
         path.add(point);
       }
       line = DrawnLine(path, selectedColor, selectedWidth);
@@ -147,7 +147,7 @@ class _DrawingPageState extends State<DrawingPage> {
  */
   void lineDrawEnd(DragEndDetails details) {
     setState(() {
-      if (state == Status.color || state == Status.linedrawing) {
+      if (state == Status.free_draw || state == Status.line_drawing) {
         print('User has ended drawing');
         lines.add(line);
       }
@@ -241,7 +241,7 @@ class _DrawingPageState extends State<DrawingPage> {
         child:Icon(Icons.create_rounded),
         onPressed: () {
           setState(() {
-            state = Status.linedrawing;
+            state = Status.line_drawing;
           });
         },
       ),
@@ -292,7 +292,7 @@ Widget buildUploadButton() {
         child: Container(),
         onPressed: () {
           setState(() {
-            state = Status.color;
+            state = Status.free_draw;
             selectedColor = color;
           });
         },
@@ -350,7 +350,7 @@ Widget buildUploadButton() {
     }
     return Container(
       decoration: BoxDecoration(
-        color: Colors.red[200]
+        color: Colors.white
       ),
       width: width,
       height: height,
