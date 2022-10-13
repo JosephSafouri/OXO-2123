@@ -387,9 +387,17 @@ Widget buildUploadButton() {
       backgroundColor: Colors.white10,
       body: Stack(
         children: <Widget>[
-          determineDisplayContent(_width, _height)
-          ,
+          determineDisplayContent(_width, _height),
           buildCurrentPath(context),
+          Positioned(child: Container(
+            color: Colors.white,
+            alignment: Alignment.centerRight,
+          ),
+            right: 0,
+            top: 0,
+            width: 0.05 * _width,
+            height: _height,
+          ),
           buildColorToolbar(),
           buildStrokeToolbar(),
         ],
