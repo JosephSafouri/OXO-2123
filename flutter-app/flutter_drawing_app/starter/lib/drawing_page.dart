@@ -7,20 +7,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
- 
+import 'package:flutter/rendering.dart';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
+
 // Status keeps track of what action the user is trying to execute, default to none on start
 enum Status {
   none,
   free_draw,
   line_drawing,
   upload_image,
-  text_field //adds a text field state 
+  text_field //adds a text field state
 }
 
 class DrawingPage extends StatefulWidget {
   @override
   _DrawingPageState createState() => _DrawingPageState();
 }
+
 /*
 * This renders the canvas to have the drawing state containing
 * the toolbar with all the types of colors in the list,
@@ -29,10 +35,10 @@ class DrawingPage extends StatefulWidget {
 class _DrawingPageState extends State<DrawingPage> {
   ImagePicker picker = ImagePicker();
   File? displayImage;
-  GlobalKey _globalKey = new GlobalKey();
+  GlobalKey<ScaffoldState> _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line = DrawnLine([], Colors.white, 0);
-  
+
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
@@ -49,8 +55,10 @@ class _DrawingPageState extends State<DrawingPage> {
     Colors.pinkAccent
   ];
 
-  StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
-  StreamController<DrawnLine> currentLineStreamController = StreamController<DrawnLine>.broadcast();
+  StreamController<List<DrawnLine>> linesStreamController =
+      StreamController<List<DrawnLine>>.broadcast();
+  StreamController<DrawnLine> currentLineStreamController =
+      StreamController<DrawnLine>.broadcast();
   /*
   * This will allow the user to be able to save
   * the image that is being displayed whether there
@@ -60,8 +68,33 @@ class _DrawingPageState extends State<DrawingPage> {
   * they annotate it.
   */
   Future<void> save() async {
-    // TODO
+    try {
+      RenderRepaintBoundary boundary = _globalKey.currentContext!
+          .findRenderObject()! as RenderRepaintBoundary;
+      print("Here2?");
+      ui.Image image = await boundary.toImage();
+      ByteData? byteData =
+          await (image.toByteData(format: ui.ImageByteFormat.png));
+      print("Here3?");
+      if (byteData != null) {
+        print("Here4?");
+        final time = DateTime.now()
+            .toIso8601String()
+            .replaceAll('.', '-')
+            .replaceAll(':', '-');
+        final name = 'screenshot_$time';
+        final saved = await ImageGallerySaver.saveImage(
+            byteData.buffer.asUint8List(),
+            name: name,
+            isReturnImagePathOfIOS: true);
+        print("Here5?");
+      }
+      print("Here6?");
+    } catch (e) {
+      print(e);
+    }
   }
+
   /*
   * This will let the user clear the page of all notations
   * if it the canvas was modified in a way they do not like.
@@ -72,6 +105,7 @@ class _DrawingPageState extends State<DrawingPage> {
       line = DrawnLine([], Colors.white, 0);
     });
   }
+
   /*
   * This allows the user to pick an image file type
   * and set it as the canvas background to allow them
@@ -80,16 +114,16 @@ class _DrawingPageState extends State<DrawingPage> {
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-        if(image == null) {
-          return;
-        }
-      final imageTemp = File(image.path);
-      
-      setState(() => this.displayImage = imageTemp);
-      } on PlatformException catch(e) {
-        print('Failed to pick image: $e');
+      if (image == null) {
+        return;
       }
-   }
+      final imageTemp = File(image.path);
+
+      setState(() => this.displayImage = imageTemp);
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
 
   /*
   * This method allows the user to begin drawing a line by
@@ -110,7 +144,8 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
- /*
+
+  /*
  * This method does a similar thing to the previous method
  * but has a variable that contains a list of points that
  * the user has made. This updates the dynamic line from a 
@@ -141,7 +176,8 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
- /*
+
+  /*
  * This method tells the system when the user has let go of the 
  * drawing something on the canvas and adds it to the list of lines.
  */
@@ -153,6 +189,7 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     });
   }
+
   /*
   This method begins adding the text field on an X-ray image.
   */
@@ -176,8 +213,15 @@ class _DrawingPageState extends State<DrawingPage> {
           color: Colors.transparent,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: CustomPaint(
-            painter: Sketcher(lines: lines),
+          child: StreamBuilder<DrawnLine>(
+            stream: currentLineStreamController.stream,
+            builder: (context, snapshot) {
+              return CustomPaint(
+                painter: Sketcher(
+                  lines: [line],
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -186,16 +230,15 @@ class _DrawingPageState extends State<DrawingPage> {
 
   Widget buildStrokeToolbar() {
     return Positioned(
-      bottom: 100.0,
-      right: 10.0,
-      child: Column(
-        children: [
-          buildStrokeButton(5.0),
-          buildStrokeButton(10.0),
-          buildStrokeButton(17.0),
-        ],
-      )
-    );
+        bottom: 100.0,
+        right: 10.0,
+        child: Column(
+          children: [
+            buildStrokeButton(5.0),
+            buildStrokeButton(10.0),
+            buildStrokeButton(17.0),
+          ],
+        ));
   }
 
   //TODO: Make Stroke width expand horizontally not vertically
@@ -212,7 +255,13 @@ class _DrawingPageState extends State<DrawingPage> {
         child: Container(
           width: strokeWidth * 2,
           height: strokeWidth * 2,
-          decoration: BoxDecoration(color: selectedColor, borderRadius: BorderRadius.circular(20.0), border: Border.all(style: strokeWidthIsClicked ? BorderStyle.solid : BorderStyle.none)),
+          decoration: BoxDecoration(
+              color: selectedColor,
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(
+                  style: strokeWidthIsClicked
+                      ? BorderStyle.solid
+                      : BorderStyle.none)),
         ),
       ),
     );
@@ -227,19 +276,22 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton()
+          buildLineButton(),
+          buildUploadButton(),
+          buildTextFieldButton(),
+          buildDownloadButton()
         ],
       ),
     );
   }
-  
+
   Widget buildLineButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
         backgroundColor: selectedColor,
-        child:Icon(Icons.create_rounded),
+        child: Icon(Icons.create_rounded),
         onPressed: () {
           setState(() {
             if (displayImage != null) {
@@ -250,21 +302,21 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
+
 /*
   This is the button widget for the upload image feature.
   It is added on the tool bar.
   */
-Widget buildUploadButton() {
+  Widget buildUploadButton() {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: FloatingActionButton(
-        mini: true,
-        backgroundColor: Colors.black,
-        child:Icon(Icons.add_to_photos),
-        onPressed: () {
-          pickImage();
-         }
-      ));
+        padding: const EdgeInsets.all(4.0),
+        child: FloatingActionButton(
+            mini: true,
+            backgroundColor: Colors.black,
+            child: Icon(Icons.add_to_photos),
+            onPressed: () {
+              pickImage();
+            }));
   }
   /*
   This is the button widget for the text field feature.
@@ -337,45 +389,36 @@ Widget buildUploadButton() {
     if (displayImage != null) {
       if (kIsWeb) {
         return Container(
-        width: 0.95 * width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
-        child: 
-        Image.network(
-            displayImage!.path,
-            fit: BoxFit.fill
-          )   
-      );
+            width: 0.95 *
+                width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
+            child: Image.network(displayImage!.path, fit: BoxFit.fill));
       } else {
-      return Container( 
-        width: 0.95 * width,
-        child: 
-        Image.file(
-            displayImage!,
-            fit: BoxFit.fill
-          )   
-      );
-      } 
+        return Container(
+            width: 0.95 * width,
+            child: Image.file(displayImage!, fit: BoxFit.fill));
+      }
     }
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white
-      ),
+      decoration: BoxDecoration(color: Colors.white),
       width: width,
       height: height,
     );
   }
-    /*
+  /*
     * TODO: Unfinished skeleton of the point button.
     */
-    Widget buildPointButton() {
-    return GestureDetector(
-      child: CircleAvatar(
-        child: Icon(
-          Icons.add_circle,
-          size: 20.0,
-          color: Colors.white,
-        ),
-      ),
-    );
+
+  Widget buildDownloadButton() {
+    return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: FloatingActionButton(
+          mini: true,
+          backgroundColor: Colors.black,
+          child: Icon(Icons.save),
+          onPressed: () async {
+            save();
+          },
+        ));
   }
 
   @override
@@ -389,10 +432,11 @@ Widget buildUploadButton() {
         children: <Widget>[
           determineDisplayContent(_width, _height),
           buildCurrentPath(context),
-          Positioned(child: Container(
-            color: Colors.white,
-            alignment: Alignment.centerRight,
-          ),
+          Positioned(
+            child: Container(
+              color: Colors.white,
+              alignment: Alignment.centerRight,
+            ),
             right: 0,
             top: 0,
             width: 0.05 * _width,
@@ -405,6 +449,26 @@ Widget buildUploadButton() {
     );
   }
 
+  Widget buildAllPaths(BuildContext context) {
+    return RepaintBoundary(
+      key: _globalKey,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: StreamBuilder<List<DrawnLine>>(
+          stream: linesStreamController.stream,
+          builder: (context, snapshot) {
+            return CustomPaint(
+              painter: Sketcher(
+                lines: lines,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     linesStreamController.close();
@@ -412,5 +476,3 @@ Widget buildUploadButton() {
     super.dispose();
   }
 }
-
-
