@@ -5,8 +5,10 @@ import 'package:drawing_app/drawn_line.dart';
 import 'package:drawing_app/sketcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screenshot/screenshot.dart';
  
 // Status keeps track of what action the user is trying to execute, default to none on start
 enum Status {
@@ -32,7 +34,10 @@ class _DrawingPageState extends State<DrawingPage> {
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line = DrawnLine([], Colors.white, 0);
-  
+  ScreenshotController screenshotController = ScreenshotController();
+
+  Uint8List _image = Uint8List.fromList([0]);
+
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
@@ -61,6 +66,15 @@ class _DrawingPageState extends State<DrawingPage> {
   */
   Future<void> save() async {
     // TODO
+    print("User saved the image");
+    await screenshotController.capture().then((image) => {
+      _image = image!
+    });
+    final saved = await ImageGallerySaver.saveImage(
+      _image,
+      quality: 100,
+      name: DateTime.now().toIso8601String(),
+    );
   }
   /*
   * This will let the user clear the page of all notations
@@ -227,7 +241,7 @@ class _DrawingPageState extends State<DrawingPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton()
+          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton(), buildSaveButton()
         ],
       ),
     );
@@ -387,8 +401,17 @@ Widget buildUploadButton() {
       backgroundColor: Colors.white10,
       body: Stack(
         children: <Widget>[
-          determineDisplayContent(_width, _height),
-          buildCurrentPath(context),
+
+          Screenshot(
+              child: Stack(
+
+                children: [
+                  determineDisplayContent(_width, _height),
+                  buildCurrentPath(context)
+                ],
+              ),
+              controller: screenshotController
+          ),
           Positioned(child: Container(
             color: Colors.white,
             alignment: Alignment.centerRight,
