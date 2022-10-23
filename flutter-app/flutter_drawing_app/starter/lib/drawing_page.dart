@@ -266,11 +266,33 @@ Widget buildUploadButton() {
          }
       ));
   }
+  bool dis = false;
+  /*
+  This i
+  */
+  Widget textBox() {
+    return Visibility(
+          visible: dis,
+          child: Center (
+            child: const SizedBox(
+              width: 175.0,
+              child: TextField(
+                style: TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+                decoration: InputDecoration (
+                  labelText: "Add Text",
+                  enabledBorder: const OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red, width: 5.0),
+                  ),
+                )
+             ),
+            ),
+          ),
+        );
+  }
   /*
   This is the button widget for the text field feature.
   It is added on the tool bar.
   */
-
   Widget buildTextFieldButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -279,9 +301,10 @@ Widget buildUploadButton() {
         backgroundColor: selectedColor,
         onPressed: () {
           setState(() {
-            state = Status.none;
+            dis = !dis;
           });
         },
+        child: Text('Text'),
       ),
     );
   }
@@ -398,8 +421,9 @@ Widget buildUploadButton() {
             width: 0.05 * _width,
             height: _height,
           ),
-          buildColorToolbar(),
-          buildStrokeToolbar(),
+        textBox(),
+        buildColorToolbar(),
+        buildStrokeToolbar(),
         ],
       ),
     );
