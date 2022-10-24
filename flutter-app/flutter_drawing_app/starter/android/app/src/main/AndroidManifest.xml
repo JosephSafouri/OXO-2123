@@ -2,7 +2,9 @@
     package="com.samarth.drawing_app">
    <application
         android:label="drawing_app"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
