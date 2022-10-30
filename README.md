@@ -60,3 +60,23 @@ Praharsh Patel </br>
     <li> We are allowed to draw on the toolbar which we do not want.</li>
 </ul>
 
+## Version 0.3.0
+### Features
+<ul>
+    <li> Added a button to add a textbox within the image to do text annotation.</li>
+    <li> Added a button to allow the user to export an image to your gallery with the annotations.</li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> The point button has been removed and converted to something else.</li>
+    <li> The textbox feature now works but only appears in the middle of the canvas.</li>
+    <li> The toolbar is now a separate entity and can't be drawn on.</li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> You cannot annotate near the toolbar.</li>
+    <li> When selecting a color and on line draw, it will reset to default and go to free drawing.</li>
+</ul>
+
