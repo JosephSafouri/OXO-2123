@@ -33,8 +33,8 @@ Praharsh Patel </br>
 
 ### Known Issues
 <ul>
-    <li> Image uploading </li>
-    <li> Straight line drawing </li>
+    <li> Image uploading features needs to be implemented </li>
+    <li> Straight line drawing needs to be implemented </li>
 </ul>
 
 ## Version 0.2.0
@@ -63,20 +63,20 @@ Praharsh Patel </br>
 ## Version 0.3.0
 ### Features
 <ul>
-    <li> Added a button to add a textbox within the image to do text annotation.</li>
+    <li> Added a button that allows users to add a textbox within the image to do text annotation.</li>
     <li> Added a button to allow the user to export an image to your gallery with the annotations.</li>
 </ul>
 
 ### Bug Fixes
 <ul>
-    <li> The point button has been removed and converted to something else.</li>
-    <li> The textbox feature now works but only appears in the middle of the canvas.</li>
-    <li> The toolbar is now a separate entity and can't be drawn on.</li>
+    <li> The point button has been removed and converted to the export feature.</li>
+    <li> The toolbar is now a separate entity and cannot be drawn on.</li>
 </ul>
 
 ### Known Issues
 <ul>
-    <li> You cannot annotate near the toolbar.</li>
-    <li> When selecting a color and on line draw, it will reset to default and go to free drawing.</li>
+    <li> When changing colors on line drawing mode, drawing state will be set to free drawing.</li>
+    <li> Exported images have an a black bar where the toolbar was.</li>
+    <li> The textbox feature now works but only appears in the middle of the canvas.</li>
 </ul>
 
