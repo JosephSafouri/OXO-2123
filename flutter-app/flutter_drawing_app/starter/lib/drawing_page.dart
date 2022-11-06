@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:drawing_app/drawn_line.dart';
 import 'package:drawing_app/sketcher.dart';
@@ -9,6 +10,8 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screenshot/screenshot.dart';
+
+import 'line_type.dart';
  
 // Status keeps track of what action the user is trying to execute, default to none on start
 enum Status {
@@ -33,7 +36,7 @@ class _DrawingPageState extends State<DrawingPage> {
   File? displayImage;
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
-  DrawnLine line = DrawnLine([], Colors.white, 0);
+  DrawnLine line = DrawnLine([], Colors.white, 0, LineType.free_draw);
   ScreenshotController screenshotController = ScreenshotController();
 
   Uint8List _image = Uint8List.fromList([0]);
@@ -83,7 +86,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Future<void> clear() async {
     setState(() {
       lines = [];
-      line = DrawnLine([], Colors.white, 0);
+      line = DrawnLine([], Colors.white, 0, LineType.free_draw);
     });
   }
   /*
@@ -119,7 +122,7 @@ class _DrawingPageState extends State<DrawingPage> {
     final point = box.globalToLocal(details.globalPosition);
 
     if (state == Status.free_draw || state == Status.line_drawing) {
-      line = DrawnLine([point], selectedColor, selectedWidth);
+      line = DrawnLine([point], selectedColor, selectedWidth, state == Status.free_draw ? LineType.free_draw : LineType.straight);
     }
     currentLineStreamController.add(line);
   }
@@ -144,7 +147,7 @@ class _DrawingPageState extends State<DrawingPage> {
     } else if (state == Status.free_draw) {
       path.add(point);
     }
-    line = DrawnLine(path, selectedColor, selectedWidth);
+    line = DrawnLine(path, selectedColor, selectedWidth, state == Status.free_draw ? LineType.free_draw : LineType.straight);
 
     // if (lines.length == 0) {
     //   lines.add(line);
@@ -348,15 +351,29 @@ Widget buildUploadButton() {
   }
 
   Widget buildMeasurementView() {
-    return Stack(
-      children: [for (line in lines)
-        Positioned.fill(left: line.path[0].dx, top: line.path[0].dy, child: Text("Hello"))
-      ],
+    return StreamBuilder(
+      stream: linesStreamController.stream,
+        builder: (context, snapshot) {
+      return Stack(
+        children: [for (line in lines)
+          if (line.lineType == LineType.straight)
+            Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text("Hello")))
+        ],
+      );
+    });
+  }
 
-
-
-    );
-
+  Widget buildCurrentMeasurementView() {
+    return StreamBuilder(
+        stream: currentLineStreamController.stream,
+        builder: (context, snapshot) {
+          return Stack(
+            children: [
+              if (line.lineType == LineType.straight)
+                Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text("Hello")))
+            ],
+          );
+        });
   }
 
   Widget buildColorButton(Color color) {
@@ -466,9 +483,10 @@ Widget buildUploadButton() {
 
                 children: [
                   determineDisplayContent(_width, _height),
+                  buildMeasurementView(),
+                  buildCurrentMeasurementView(),
                   buildAllPaths(context),
-                  buildCurrentPath(context),
-                  // buildMeasurementView()
+                  buildCurrentPath(context)
                 ],
               ),
               controller: screenshotController
