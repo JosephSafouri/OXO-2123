@@ -123,8 +123,8 @@ class _DrawingPageState extends State<DrawingPage> {
 
     if (state == Status.free_draw || state == Status.line_drawing) {
       line = DrawnLine([point], selectedColor, selectedWidth, state == Status.free_draw ? LineType.free_draw : LineType.straight);
+      currentLineStreamController.add(line);
     }
-    currentLineStreamController.add(line);
   }
  /*
  * This method does a similar thing to the previous method
@@ -137,24 +137,26 @@ class _DrawingPageState extends State<DrawingPage> {
     final point = box.globalToLocal(details.globalPosition);
 
     final path = List.from(line.path);
-
-    if (state == Status.line_drawing) {
-      if (path.length <= 1) {
+    if (state == Status.line_drawing || state == Status.free_draw) {
+      if (state == Status.line_drawing) {
+        if (path.length <= 1) {
+          path.add(point);
+        } else {
+          path[1] = point;
+        }
+      } else if (state == Status.free_draw) {
         path.add(point);
-      } else {
-        path[1] = point;
       }
-    } else if (state == Status.free_draw) {
-      path.add(point);
-    }
-    line = DrawnLine(path, selectedColor, selectedWidth, state == Status.free_draw ? LineType.free_draw : LineType.straight);
+      line = DrawnLine(path, selectedColor, selectedWidth,
+          state == Status.free_draw ? LineType.free_draw : LineType.straight);
 
-    // if (lines.length == 0) {
-    //   lines.add(line);
-    // } else {
-    //   lines[lines.length - 1] = line;
-    // }
-    currentLineStreamController.add(line);
+      // if (lines.length == 0) {
+      //   lines.add(line);
+      // } else {
+      //   lines[lines.length - 1] = line;
+      // }
+      currentLineStreamController.add(line);
+    }
   }
  /*
  * This method tells the system when the user has let go of the 
@@ -164,8 +166,8 @@ class _DrawingPageState extends State<DrawingPage> {
     if (state == Status.free_draw || state == Status.line_drawing) {
       print('User has ended drawing');
       lines.add(line);
+      linesStreamController.add(lines);
     }
-    linesStreamController.add(lines);
   }
   /*
   This method begins adding the text field on an X-ray image.
@@ -364,13 +366,14 @@ Widget buildUploadButton() {
   }
 
   Widget buildCurrentMeasurementView() {
+    var random = Random();
     return StreamBuilder(
         stream: currentLineStreamController.stream,
         builder: (context, snapshot) {
           return Stack(
             children: [
               if (line.lineType == LineType.straight)
-                Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text("Hello")))
+                Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text(random.nextInt(10).toString())))
             ],
           );
         });
