@@ -118,11 +118,10 @@ class _DrawingPageState extends State<DrawingPage> {
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
 
-    setState(() {
-      if (state == Status.free_draw || state == Status.line_drawing) {
-        line = DrawnLine([point], selectedColor, selectedWidth);
-      }
-    });
+    if (state == Status.free_draw || state == Status.line_drawing) {
+      line = DrawnLine([point], selectedColor, selectedWidth);
+    }
+    currentLineStreamController.add(line);
   }
  /*
  * This method does a similar thing to the previous method
@@ -136,36 +135,34 @@ class _DrawingPageState extends State<DrawingPage> {
 
     final path = List.from(line.path);
 
-    setState(() {
-      if (state == Status.line_drawing) {
-        if (path.length <= 1) {
-          path.add(point);
-        } else {
-          path[1] = point;
-        }
-      } else if (state == Status.free_draw) {
+    if (state == Status.line_drawing) {
+      if (path.length <= 1) {
         path.add(point);
-      }
-      line = DrawnLine(path, selectedColor, selectedWidth);
-
-      if (lines.length == 0) {
-        lines.add(line);
       } else {
-        lines[lines.length - 1] = line;
+        path[1] = point;
       }
-    });
+    } else if (state == Status.free_draw) {
+      path.add(point);
+    }
+    line = DrawnLine(path, selectedColor, selectedWidth);
+
+    // if (lines.length == 0) {
+    //   lines.add(line);
+    // } else {
+    //   lines[lines.length - 1] = line;
+    // }
+    currentLineStreamController.add(line);
   }
  /*
  * This method tells the system when the user has let go of the 
  * drawing something on the canvas and adds it to the list of lines.
  */
   void lineDrawEnd(DragEndDetails details) {
-    setState(() {
-      if (state == Status.free_draw || state == Status.line_drawing) {
-        print('User has ended drawing');
-        lines.add(line);
-      }
-    });
+    if (state == Status.free_draw || state == Status.line_drawing) {
+      print('User has ended drawing');
+      lines.add(line);
+    }
+    linesStreamController.add(lines);
   }
   /*
   This method begins adding the text field on an X-ray image.
@@ -190,9 +187,36 @@ class _DrawingPageState extends State<DrawingPage> {
           color: Colors.transparent,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: CustomPaint(
-            painter: Sketcher(lines: lines),
+          child: StreamBuilder<DrawnLine> (
+              stream: currentLineStreamController.stream,
+              builder: (context, snapshot) {
+                return CustomPaint(
+                  painter: Sketcher(
+                    lines: [line],
+                  )
+                );
+              }
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildAllPaths(BuildContext context) {
+    return RepaintBoundary(
+      key: _globalKey,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: StreamBuilder<List<DrawnLine>>(
+          stream: linesStreamController.stream,
+          builder: (context, snapshot) {
+            return CustomPaint(
+              painter: Sketcher(
+                lines: lines,
+              ),
+            );
+          },
         ),
       ),
     );
@@ -323,6 +347,18 @@ Widget buildUploadButton() {
     );
   }
 
+  Widget buildMeasurementView() {
+    return Stack(
+      children: [for (line in lines)
+        Positioned.fill(left: line.path[0].dx, top: line.path[0].dy, child: Text("Hello"))
+      ],
+
+
+
+    );
+
+  }
+
   Widget buildColorButton(Color color) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -430,7 +466,9 @@ Widget buildUploadButton() {
 
                 children: [
                   determineDisplayContent(_width, _height),
-                  buildCurrentPath(context)
+                  buildAllPaths(context),
+                  buildCurrentPath(context),
+                  // buildMeasurementView()
                 ],
               ),
               controller: screenshotController
