@@ -18,6 +18,24 @@ Praharsh Patel </br>
 - Chrome tab should open up and display the running app
 
 # Release Notes
+## Version 0.4.0
+### Features
+<ul>
+    <li> Added the ability to measure with a line.</li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> When changing the colors in line drawing mode, it stays in line drawing mode instead of returning to free drawing.</li>
+    <li> Exporting the image does not show the black bar anymore. </li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> If there is no textbox, the toolbar slightly shifts from the right to the left creating a black bar.</li>
+    <li> The textbox feature is still not a movable object and appears in the middle of the screen. </li>
+</ul>
+
 ## Version 0.3.0
 ### Features
 <ul>
