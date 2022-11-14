@@ -190,7 +190,7 @@ class _DrawingPageState extends State<DrawingPage> {
       child: RepaintBoundary(
         child: Container(
           color: Colors.transparent,
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width * 0.95,
           height: MediaQuery.of(context).size.height,
           child: StreamBuilder<DrawnLine> (
               stream: currentLineStreamController.stream,
@@ -211,7 +211,7 @@ class _DrawingPageState extends State<DrawingPage> {
     return RepaintBoundary(
       key: _globalKey,
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.95,
         height: MediaQuery.of(context).size.height,
         child: StreamBuilder<List<DrawnLine>>(
           stream: linesStreamController.stream,
@@ -352,31 +352,42 @@ Widget buildUploadButton() {
     );
   }
 
-  Widget buildMeasurementView() {
+  Widget buildMeasurementView(BuildContext context) {
     return StreamBuilder(
       stream: linesStreamController.stream,
         builder: (context, snapshot) {
-      return Stack(
-        children: [for (line in lines)
-          if (line.lineType == LineType.straight)
-            Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text("Hello")))
-        ],
+      return Container(
+        width: MediaQuery.of(context).size.width * 0.95,
+          child : Stack(
+          children: [for (line in lines)
+            if (line.lineType == LineType.straight)
+              Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text(findMeasurement(line.path[0], line.path[line.path.length-1]).toString())))
+          ],
+        )
       );
     });
   }
 
-  Widget buildCurrentMeasurementView() {
+  Widget buildCurrentMeasurementView(BuildContext context) {
     var random = Random();
     return StreamBuilder(
         stream: currentLineStreamController.stream,
         builder: (context, snapshot) {
-          return Stack(
-            children: [
-              if (line.lineType == LineType.straight)
-                Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text(random.nextInt(10).toString())))
-            ],
+          return Container(
+            width: MediaQuery.of(context).size.width * 0.95,
+              child: Stack(
+              children: [
+                if (line.lineType == LineType.straight)
+                  Container(child:Positioned.fill(left: (line.path[0].dx+line.path[line.path.length-1].dx).abs()/2, top: (line.path[0].dy+line.path[line.path.length-1].dy).abs()/2, child: Text(findMeasurement(line.path[0], line.path[line.path.length-1]).toString())))
+              ],
+            )
           );
         });
+  }
+
+  double findMeasurement(Offset first, Offset second) {
+    double distance = sqrt(pow(first.dx - second.dx, 2) + pow(first.dy - second.dy, 2));
+    return distance;
   }
 
   Widget buildColorButton(Color color) {
@@ -486,8 +497,8 @@ Widget buildUploadButton() {
 
                 children: [
                   determineDisplayContent(_width, _height),
-                  buildMeasurementView(),
-                  buildCurrentMeasurementView(),
+                  buildMeasurementView(context),
+                  buildCurrentMeasurementView(context),
                   buildAllPaths(context),
                   buildCurrentPath(context)
                 ],
