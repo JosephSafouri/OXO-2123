@@ -1,4 +1,5 @@
 import 'package:drawing_app/drawn_line.dart';
+import 'package:drawing_app/line_type.dart';
 import 'package:flutter/material.dart';
 ///
 /// Sketcher is a class that extends CustomPainter and is 
@@ -23,6 +24,7 @@ class Sketcher extends CustomPainter {
         if (lines[i].path[j] != null && lines[i].path[j + 1] != null) {
           paint.color = lines[i].color;
           paint.strokeWidth = lines[i].width;
+          paint.strokeCap = lines[i].lineType == LineType.straight ? StrokeCap.square : StrokeCap.round;
           canvas.drawLine(lines[i].path[j], lines[i].path[j + 1], paint);
         }
       }
