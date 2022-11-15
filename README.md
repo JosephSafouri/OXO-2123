@@ -34,7 +34,6 @@ Praharsh Patel </br>
 <ul>
     <li> If there is no textbox, the toolbar slightly shifts from the right to the left creating a black bar.</li>
     <li> The textbox feature is still not a movable object and appears in the middle of the screen. </li>
-    <li> The save feature only works on andriod simulations, need to adjust to work on multiple platforms. </li>
 </ul>
 
 ## Version 0.3.0
