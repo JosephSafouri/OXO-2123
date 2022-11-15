@@ -21,7 +21,7 @@ Praharsh Patel </br>
 ## Version 0.4.0
 ### Features
 <ul>
-    <li> Added the ability to measure with a line.</li>
+    <li> Implemented a feature to allow the user to make measurements with the line drawing tool.</li>
 </ul>
 
 ### Bug Fixes
