@@ -201,7 +201,7 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  buildAllTextBoxes(BuildContext context) {
+  buildAllTextBoxes() {
     return Stack(children: [
       for (TextBox box in textBoxes)
         box
@@ -232,8 +232,8 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget buildToolbar() {
     double space_between = 10;
     return Positioned(
-      top: 40.0,
-      right: 10.0,
+      top: 180,
+      right: 10,
       child: Container(
         padding: const EdgeInsets.all(10.0),
         color: Colors.grey,
@@ -293,27 +293,6 @@ class _DrawingPageState extends State<DrawingPage> {
             onPressed: () {
               pickImage();
             }));
-  }
-
-  bool dis = false;
-  Widget textBox() {
-    return Visibility(
-      visible: dis,
-      child: Center(
-        child: const SizedBox(
-          width: 175.0,
-          child: TextField(
-              style: TextStyle(
-                  fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                labelText: "Add Text",
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.red, width: 5.0),
-                ),
-              )),
-        ),
-      ),
-    );
   }
 
   /*
@@ -539,7 +518,8 @@ class _DrawingPageState extends State<DrawingPage> {
                         buildMeasurementView(context),
                         buildCurrentMeasurementView(context),
                         buildAllPaths(context),
-                        buildCurrentPath(context)
+                        buildCurrentPath(context),
+                        buildAllTextBoxes(),
                       ],
                     ),
                     controller: screenshotController),
@@ -553,7 +533,6 @@ class _DrawingPageState extends State<DrawingPage> {
                   width: 0.05 * _width,
                   height: _height,
                 ),
-                buildAllTextBoxes(context),
                 buildToolbar(),
               ],
             )));
