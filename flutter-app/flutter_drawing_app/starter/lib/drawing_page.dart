@@ -328,7 +328,8 @@ class _DrawingPageState extends State<DrawingPage> {
         backgroundColor: selectedColor,
         onPressed: () {
           setState(() {
-            textBoxes.add(TextBox(selectedColor));
+            if (this.displayImage != null)
+              textBoxes.add(TextBox(selectedColor));
           });
         },
         child: Text('Text'),
@@ -552,7 +553,7 @@ class _DrawingPageState extends State<DrawingPage> {
                   width: 0.05 * _width,
                   height: _height,
                 ),
-                textBox(),
+                buildAllTextBoxes(context),
                 buildToolbar(),
               ],
             )));
