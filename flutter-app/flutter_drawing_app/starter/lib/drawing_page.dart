@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screenshot/screenshot.dart';
 
 import 'line_type.dart';
+import 'text_box.dart';
 
 // Status keeps track of what action the user is trying to execute, default to none on start
 enum Status {
@@ -37,6 +38,7 @@ class _DrawingPageState extends State<DrawingPage> {
   File? displayImage;
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
+  List<TextBox> textBoxes = <TextBox>[];
   DrawnLine line = DrawnLine([], Colors.white, 0, LineType.free_draw);
   ScreenshotController screenshotController = ScreenshotController();
 
@@ -89,6 +91,7 @@ class _DrawingPageState extends State<DrawingPage> {
     setState(() {
       lines = [];
       line = DrawnLine([], Colors.white, 0, LineType.free_draw);
+      textBoxes = [];
     });
   }
 
@@ -212,6 +215,14 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  buildAllTextBoxes(BuildContext context) {
+    return Stack(children: [
+      for (TextBox box in textBoxes)
+        box
+    ],);
+
+  }
+
   Widget buildAllPaths(BuildContext context) {
     return RepaintBoundary(
       key: _globalKey,
@@ -324,49 +335,6 @@ class _DrawingPageState extends State<DrawingPage> {
             }));
   }
 
-  Offset offset = Offset.zero;
-
-  Widget textBox() {
-    return Positioned(
-        left: offset.dx,
-        top: offset.dy,
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            setState(() {
-              offset = Offset(
-                  offset.dx + details.delta.dx, offset.dy + details.delta.dy);
-              }
-            );
-          },
-          child: buildTextBox(),
-
-        ));
-
-  }
-
-  bool dis = true;
-  /*
-  This i
-  */
-  Widget buildTextBox() {
-    return Visibility(
-      visible: dis,
-      child: Center(
-        child: SizedBox(
-          width: 175.0,
-          height: 2000.0,
-          child: TextField(
-              style: TextStyle(
-                  fontSize: 20, color: selectedColor, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.red, width: 1.0),
-                ),
-              )),
-        ),
-      ),
-    );
-  }
 
   /*
   This is the button widget for the text field feature.
@@ -380,7 +348,7 @@ class _DrawingPageState extends State<DrawingPage> {
         backgroundColor: selectedColor,
         onPressed: () {
           setState(() {
-            dis = !dis;
+            textBoxes.add(TextBox(selectedColor));
           });
         },
         child: Text('Text'),
@@ -563,7 +531,8 @@ class _DrawingPageState extends State<DrawingPage> {
             width: 0.05 * _width,
             height: _height,
           ),
-          textBox(),
+          // TextBox(selectedColor),
+          buildAllTextBoxes(context),
           buildColorToolbar(),
           buildStrokeToolbar(),
         ],
