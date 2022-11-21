@@ -451,6 +451,9 @@ Widget buildUploadButton() {
       } 
     }
     return Container(
+      child: Center(
+        child: Text('Upload an Image!', style: TextStyle(fontSize: 25))
+      ),
       decoration: BoxDecoration(
         color: Colors.white
       ),
