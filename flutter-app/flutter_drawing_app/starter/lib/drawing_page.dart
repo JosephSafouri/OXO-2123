@@ -10,6 +10,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screenshot/screenshot.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'line_type.dart';
 import 'text_box.dart';
@@ -47,23 +48,13 @@ class _DrawingPageState extends State<DrawingPage> {
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
-  bool strokeWidthIsClicked = false;
-
-  List<Color> toolbarColors = [
-    Colors.red,
-    Colors.blueAccent,
-    Colors.deepOrange,
-    Colors.green,
-    Colors.lightBlue,
-    Colors.black,
-    Colors.cyanAccent,
-    Colors.pinkAccent
-  ];
+  // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
       StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController =
       StreamController<DrawnLine>.broadcast();
+
   /*
   * This will allow the user to be able to save
   * the image that is being displayed whether there
@@ -73,7 +64,9 @@ class _DrawingPageState extends State<DrawingPage> {
   * they annotate it.
   */
   Future<void> save() async {
-    // TODO
+    if (this.displayImage == null) {
+      return;
+    }
     print("User saved the image");
     await screenshotController.capture().then((image) => {_image = image!});
     await ImageGallerySaver.saveImage(
@@ -108,7 +101,7 @@ class _DrawingPageState extends State<DrawingPage> {
       }
       final imageTemp = File(image.path);
 
-      setState(() => this.displayImage = imageTemp);
+      setState(() => {this.displayImage = imageTemp, state = Status.free_draw});
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
@@ -179,13 +172,6 @@ class _DrawingPageState extends State<DrawingPage> {
     }
   }
 
-  /*
-  This method begins adding the text field on an X-ray image.
-  */
-  void textFieldBegin() {
-    //TODO
-  }
-
   // Annotations should be cleared after double tap on screen
   void erase() {
     clear();
@@ -243,60 +229,31 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  Widget buildStrokeToolbar() {
-    return Positioned(
-        bottom: 100.0,
-        right: 10.0,
-        child: Column(
-          children: [
-            buildStrokeButton(5.0),
-            buildStrokeButton(10.0),
-            buildStrokeButton(17.0),
-          ],
-        ));
-  }
-
-  //TODO: Make Stroke width expand horizontally not vertically
-  Widget buildStrokeButton(double strokeWidth) {
-    return GestureDetector(
-      onTap: () {
-        selectedWidth = strokeWidth;
-        setState(() {
-          strokeWidthIsClicked = !strokeWidthIsClicked;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Container(
-          width: strokeWidth * 2,
-          height: strokeWidth * 2,
-          decoration: BoxDecoration(
-              color: selectedColor,
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(
-                  style: strokeWidthIsClicked
-                      ? BorderStyle.solid
-                      : BorderStyle.none)),
-        ),
-      ),
-    );
-  }
-
-  Widget buildColorToolbar() {
+  Widget buildToolbar() {
+    double space_between = 10;
     return Positioned(
       top: 40.0,
       right: 10.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(),
-          buildUploadButton(),
-          buildPointButton(),
-          buildTextFieldButton(),
-          buildSaveButton()
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        color: Colors.grey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildColorPickerButton(),
+            SizedBox(height: space_between),
+            buildLineButton(),
+            SizedBox(height: space_between),
+            buildPointButton(),
+            SizedBox(height: space_between),
+            buildTextFieldButton(),
+            SizedBox(height: space_between),
+            buildUploadButton(),
+            SizedBox(height: space_between),
+            buildSaveButton()
+          ],
+        ),
       ),
     );
   }
@@ -307,11 +264,14 @@ class _DrawingPageState extends State<DrawingPage> {
       child: FloatingActionButton(
         mini: true,
         backgroundColor: selectedColor,
-        child: Icon(Icons.create_rounded),
+        child: Icon(Icons.straighten),
         onPressed: () {
           setState(() {
             if (displayImage != null) {
-              state = Status.line_drawing;
+              if (state == Status.line_drawing)
+                state = Status.free_draw;
+              else
+                state = Status.line_drawing;
             }
           });
         },
@@ -329,12 +289,32 @@ class _DrawingPageState extends State<DrawingPage> {
         child: FloatingActionButton(
             mini: true,
             backgroundColor: Colors.black,
-            child: Icon(Icons.add_to_photos),
+            child: Icon(Icons.file_upload),
             onPressed: () {
               pickImage();
             }));
   }
 
+  bool dis = false;
+  Widget textBox() {
+    return Visibility(
+      visible: dis,
+      child: Center(
+        child: const SizedBox(
+          width: 175.0,
+          child: TextField(
+              style: TextStyle(
+                  fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                labelText: "Add Text",
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.red, width: 5.0),
+                ),
+              )),
+        ),
+      ),
+    );
+  }
 
   /*
   This is the button widget for the text field feature.
@@ -376,12 +356,9 @@ class _DrawingPageState extends State<DrawingPage> {
                                           line.path[line.path.length - 1].dy)
                                       .abs() /
                                   2,
-                              child: Text(
-                                findMeasurement(line.path[0],
-                                        line.path[line.path.length - 1])
-                                    .toString(),
-                                style: new TextStyle(color: Colors.white),
-                              )))
+                              child: Text(findMeasurement(line.path[0],
+                                      line.path[line.path.length - 1])
+                                  .toString())))
                 ],
               ));
         });
@@ -421,28 +398,68 @@ class _DrawingPageState extends State<DrawingPage> {
     return distance;
   }
 
-  Widget buildColorButton(Color color) {
+  Widget buildColorPicker() {
+    return BlockPicker(
+      pickerColor: selectedColor,
+      onColorChanged: (Color color) {
+        setState(() {
+          selectedColor = color;
+        });
+      },
+    );
+  }
+
+  Widget buildColorPickerButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
-        backgroundColor: color,
-        child: Container(),
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.color_lens,
+          size: 20.0,
+          color: Colors.black,
+        ),
         onPressed: () {
-          setState(() {
-            // No drawing until an image is selected
-            //TODO: Display a popup telling the user to upload an image if drawing is attempted.
-            state = Status.free_draw;
-            selectedColor = color;
-          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Choose a Color & Stroke Width'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      buildColorPicker(),
+                      StatefulBuilder(builder: (context, state) {
+                        return Slider(
+                          value: selectedWidth,
+                          min: 1,
+                          max: 10,
+                          divisions: 10,
+                          label: selectedWidth.round().toString(),
+                          onChanged: (double value) {
+                            state(() {
+                              selectedWidth = value;
+                              // selectedWidth = value;
+                            });
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
         },
       ),
     );
   }
 
   Widget buildSaveButton() {
-    return GestureDetector(
-      onTap: save,
+    return FloatingActionButton(
+      mini: true,
+      onPressed: save,
       child: CircleAvatar(
         child: Icon(
           Icons.save,
@@ -480,6 +497,8 @@ class _DrawingPageState extends State<DrawingPage> {
       }
     }
     return Container(
+      child: Center(
+          child: Text('Upload an Image!', style: TextStyle(fontSize: 25))),
       decoration: BoxDecoration(color: Colors.white),
       width: width,
       height: height,
@@ -507,37 +526,36 @@ class _DrawingPageState extends State<DrawingPage> {
     final double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white10,
-      body: Stack(
-        children: <Widget>[
-          Screenshot(
-              child: Stack(
-                children: [
-                  determineDisplayContent(_width, _height),
-                  buildMeasurementView(context),
-                  buildCurrentMeasurementView(context),
-                  buildAllPaths(context),
-                  buildCurrentPath(context)
-                ],
-              ),
-              controller: screenshotController),
-          Positioned(
-            child: Container(
-              color: Colors.white,
-              alignment: Alignment.centerRight,
-            ),
-            right: 0,
-            top: 0,
-            width: 0.05 * _width,
-            height: _height,
-          ),
-          // TextBox(selectedColor),
-          buildAllTextBoxes(context),
-          buildColorToolbar(),
-          buildStrokeToolbar(),
-        ],
-      ),
-    );
+        backgroundColor: Colors.white10,
+        body: Container(
+            width: _width,
+            child: Stack(
+              children: <Widget>[
+                Screenshot(
+                    child: Stack(
+                      children: [
+                        determineDisplayContent(_width, _height),
+                        buildMeasurementView(context),
+                        buildCurrentMeasurementView(context),
+                        buildAllPaths(context),
+                        buildCurrentPath(context)
+                      ],
+                    ),
+                    controller: screenshotController),
+                Positioned(
+                  child: Container(
+                    color: Colors.white,
+                    alignment: Alignment.centerRight,
+                  ),
+                  right: 0,
+                  top: 0,
+                  width: 0.05 * _width,
+                  height: _height,
+                ),
+                textBox(),
+                buildToolbar(),
+              ],
+            )));
   }
 
   @override

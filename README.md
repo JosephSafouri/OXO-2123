@@ -18,23 +18,42 @@ Praharsh Patel </br>
 - Chrome tab should open up and display the running app
 
 # Release Notes
-## Version 0.1.0
+## Version 0.4.0
 ### Features
 <ul>
-    <li> Added drawing feature </li>
-    <li> Added ability to change drawing </li>
-    <li> Added ability to change stroke width </li>
+    <li> Implemented a feature to allow the user to make measurements with the line drawing tool.</li>
 </ul>
 
 ### Bug Fixes
 <ul>
-    <li> <em>No bug fixes</em> </li>
+    <li> When changing the colors in line drawing mode, it stays in line drawing mode instead of returning to free drawing.</li>
+    <li> Exporting the image does not show the black bar anymore. </li>
 </ul>
 
 ### Known Issues
 <ul>
-    <li> Image uploading features needs to be implemented </li>
-    <li> Straight line drawing needs to be implemented </li>
+    <li> If there is no textbox, the toolbar slightly shifts from the right to the left creating a black bar.</li>
+    <li> The textbox feature is still not a movable object and appears in the middle of the screen. </li>
+</ul>
+
+## Version 0.3.0
+### Features
+<ul>
+    <li> Added a button that allows users to add a textbox within the image to do text annotation.</li>
+    <li> Added a button to allow the user to export an image to your gallery with the annotations.</li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> The point button has been removed and converted to the export feature.</li>
+    <li> The toolbar is now a separate entity and cannot be drawn on.</li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> When changing colors on line drawing mode, drawing state will be set to free drawing.</li>
+    <li> Exported images have an a black bar where the toolbar was.</li>
+    <li> The textbox feature now works but only appears in the middle of the canvas.</li>
 </ul>
 
 ## Version 0.2.0
@@ -60,23 +79,23 @@ Praharsh Patel </br>
     <li> We are allowed to draw on the toolbar which we do not want.</li>
 </ul>
 
-## Version 0.3.0
+## Version 0.1.0
 ### Features
 <ul>
-    <li> Added a button that allows users to add a textbox within the image to do text annotation.</li>
-    <li> Added a button to allow the user to export an image to your gallery with the annotations.</li>
+    <li> Added drawing feature </li>
+    <li> Added ability to change drawing </li>
+    <li> Added ability to change stroke width </li>
 </ul>
 
 ### Bug Fixes
 <ul>
-    <li> The point button has been removed and converted to the export feature.</li>
-    <li> The toolbar is now a separate entity and cannot be drawn on.</li>
+    <li> <em>No bug fixes</em> </li>
 </ul>
 
 ### Known Issues
 <ul>
-    <li> When changing colors on line drawing mode, drawing state will be set to free drawing.</li>
-    <li> Exported images have an a black bar where the toolbar was.</li>
-    <li> The textbox feature now works but only appears in the middle of the canvas.</li>
+    <li> Image uploading features needs to be implemented </li>
+    <li> Straight line drawing needs to be implemented </li>
 </ul>
+
 
