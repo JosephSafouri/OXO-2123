@@ -10,6 +10,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screenshot/screenshot.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'line_type.dart';
  
@@ -45,17 +46,6 @@ class _DrawingPageState extends State<DrawingPage> {
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
   bool strokeWidthIsClicked = false;
-
-  List<Color> toolbarColors = [
-    Colors.red,
-    Colors.blueAccent,
-    Colors.deepOrange,
-    Colors.green,
-    Colors.lightBlue,
-    Colors.black,
-    Colors.cyanAccent,
-    Colors.pinkAccent
-  ];
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController = StreamController<DrawnLine>.broadcast();
@@ -261,7 +251,7 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  Widget buildColorToolbar() {
+  Widget buildToolbar() {
     return Positioned(
       top: 40.0,
       right: 10.0,
@@ -269,8 +259,7 @@ class _DrawingPageState extends State<DrawingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          for (Color color in toolbarColors) buildColorButton(color),
-          buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton(), buildSaveButton()
+          buildColorPickerButton(), buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton(), buildSaveButton()
         ],
       ),
     );
@@ -282,7 +271,7 @@ class _DrawingPageState extends State<DrawingPage> {
       child: FloatingActionButton(
         mini: true,
         backgroundColor: selectedColor,
-        child:Icon(Icons.create_rounded),
+        child:Icon(Icons.straighten),
         onPressed: () {
           setState(() {
             if (displayImage != null) {
@@ -390,22 +379,36 @@ Widget buildUploadButton() {
     return distance;
   }
 
-  Widget buildColorButton(Color color) {
+  Widget buildColorPickerButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
-        backgroundColor: color,
-        child: Container(),
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.color_lens,
+          size: 20.0,
+          color: Colors.black,
+        ),
         onPressed: () {
-          setState(() {
-            // No drawing until an image is selected
-            //TODO: Display a popup telling the user to upload an image if drawing is attempted.
-            if (displayImage != null) {
-              state = Status.free_draw;
-              selectedColor = color;
-            }
-          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Choose a Color'),
+                content: SingleChildScrollView(
+                  child: BlockPicker(
+                    pickerColor: selectedColor,
+                    onColorChanged: (Color color) {
+                      setState(() {
+                        selectedColor = color;
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+          );
         },
       ),
     );
@@ -494,7 +497,6 @@ Widget buildUploadButton() {
 
           Screenshot(
               child: Stack(
-
                 children: [
                   determineDisplayContent(_width, _height),
                   buildMeasurementView(context),
@@ -515,7 +517,7 @@ Widget buildUploadButton() {
             height: _height,
           ),
         textBox(),
-        buildColorToolbar(),
+        buildToolbar(),
         buildStrokeToolbar(),
         ],
       ),
