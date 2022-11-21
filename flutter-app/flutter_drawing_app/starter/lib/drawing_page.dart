@@ -45,10 +45,11 @@ class _DrawingPageState extends State<DrawingPage> {
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
-  bool strokeWidthIsClicked = false;
+  // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController = StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController = StreamController<DrawnLine>.broadcast();
+ 
   /*
   * This will allow the user to be able to save
   * the image that is being displayed whether there
@@ -217,50 +218,31 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  Widget buildStrokeToolbar() {
-    return Positioned(
-      bottom: 100.0,
-      right: 10.0,
-      child: Column(
-        children: [
-          buildStrokeButton(5.0),
-          buildStrokeButton(10.0),
-          buildStrokeButton(17.0),
-        ],
-      )
-    );
-  }
-
-  //TODO: Make Stroke width expand horizontally not vertically
-  Widget buildStrokeButton(double strokeWidth) {
-    return GestureDetector(
-      onTap: () {
-        selectedWidth = strokeWidth;
-        setState(() {
-          strokeWidthIsClicked = !strokeWidthIsClicked;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Container(
-          width: strokeWidth * 2,
-          height: strokeWidth * 2,
-          decoration: BoxDecoration(color: selectedColor, borderRadius: BorderRadius.circular(20.0), border: Border.all(style: strokeWidthIsClicked ? BorderStyle.solid : BorderStyle.none)),
-        ),
-      ),
-    );
-  }
-
   Widget buildToolbar() {
+    double space_between = 10;
     return Positioned(
       top: 40.0,
       right: 10.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildColorPickerButton(), buildLineButton(), buildUploadButton(), buildPointButton(), buildTextFieldButton(), buildSaveButton()
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        color: Colors.grey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildColorPickerButton(),
+            SizedBox(height: space_between),
+            buildLineButton(),
+            SizedBox(height: space_between),
+            buildPointButton(),
+            SizedBox(height: space_between),
+            buildTextFieldButton(),
+            SizedBox(height: space_between),
+            buildUploadButton(), 
+            SizedBox(height: space_between), 
+            buildSaveButton()
+          ],
+        ),
       ),
     );
   }
@@ -292,16 +274,14 @@ Widget buildUploadButton() {
       child: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.black,
-        child:Icon(Icons.add_to_photos),
+        child:Icon(Icons.file_upload),
         onPressed: () {
           pickImage();
          }
       ));
   }
+
   bool dis = false;
-  /*
-  This i
-  */
   Widget textBox() {
     return Visibility(
           visible: dis,
@@ -379,6 +359,17 @@ Widget buildUploadButton() {
     return distance;
   }
 
+  Widget buildColorPicker() {
+    return BlockPicker(
+      pickerColor: selectedColor,
+      onColorChanged: (Color color) {
+        setState(() {
+          selectedColor = color;
+        });
+      },
+    );
+  }
+
   Widget buildColorPickerButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -395,17 +386,14 @@ Widget buildUploadButton() {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Choose a Color'),
+                title: Text('Choose a Color & Stroke Width'),
                 content: SingleChildScrollView(
-                  child: BlockPicker(
-                    pickerColor: selectedColor,
-                    onColorChanged: (Color color) {
-                      setState(() {
-                        selectedColor = color;
-                      });
-                    },
+                  child: ListBody(
+                    children: [
+                      buildColorPicker(), const SliderWidget(),
+                    ],
                   ),
-                ),
+                ), 
               );
             },
           );
@@ -518,7 +506,6 @@ Widget buildUploadButton() {
           ),
         textBox(),
         buildToolbar(),
-        buildStrokeToolbar(),
         ],
       ),
     );
@@ -531,5 +518,33 @@ Widget buildUploadButton() {
     super.dispose();
   }
 }
+
+  class SliderWidget extends StatefulWidget {
+    const SliderWidget({super.key});
+
+    @override
+    State<SliderWidget> createState() => _SliderWidgetState();
+  }
+
+  class _SliderWidgetState extends State<SliderWidget> {
+    double _currentSliderValue = 5;
+
+    @override
+    Widget build(BuildContext context) {
+      return Slider(
+        value: _currentSliderValue,
+        min: 1,
+        max: 10,
+        divisions: 5,
+        label: _currentSliderValue.round().toString(),
+        onChanged: (double value) {
+          setState(() {
+            _currentSliderValue = value;
+            // selectedWidth = value;
+          });
+        },
+      );
+    }
+  }
 
 
