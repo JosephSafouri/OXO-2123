@@ -1,3 +1,6 @@
+
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,9 +14,12 @@ class TextBox extends StatefulWidget {
 
 class _TextBoxState extends State<TextBox> {
   Color color;
+  final Size windowSize = MediaQueryData.fromWindow(window).size;
   Offset offset = Offset.zero;
 
-  _TextBoxState(this.color);
+  _TextBoxState(this.color) {
+    offset = Offset(windowSize.width / 2, windowSize.height / 2);
+  }
 
   @override
   Widget build(BuildContext context) {
