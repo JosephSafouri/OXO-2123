@@ -243,6 +243,8 @@ class _DrawingPageState extends State<DrawingPage> {
           children: [
             buildColorPickerButton(),
             SizedBox(height: space_between),
+            buildFreeDrawButton(),
+            SizedBox(height: space_between),
             buildLineButton(),
             SizedBox(height: space_between),
             buildPointButton(),
@@ -251,7 +253,7 @@ class _DrawingPageState extends State<DrawingPage> {
             SizedBox(height: space_between),
             buildUploadButton(),
             SizedBox(height: space_between),
-            buildSaveButton()
+            buildSaveButton(),
           ],
         ),
       ),
@@ -459,6 +461,24 @@ class _DrawingPageState extends State<DrawingPage> {
           size: 20.0,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget buildFreeDrawButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: selectedColor,
+        child: Icon(Icons.draw),
+        onPressed: () {
+          setState(() {
+            if (displayImage != null) {
+              state = Status.free_draw;
+            }
+          });
+        },
       ),
     );
   }
