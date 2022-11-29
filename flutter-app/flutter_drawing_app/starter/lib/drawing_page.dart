@@ -310,6 +310,11 @@ class _DrawingPageState extends State<DrawingPage> {
         mini: true,
         backgroundColor: selectedColor,
         onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: const Text("Text Box Mode")
+              )
+          );
           setState(() {
             if (this.displayImage != null)
               textBoxes.add(TextBox(selectedColor));
