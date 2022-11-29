@@ -202,7 +202,7 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   buildAllTextBoxes() {
-    return Stack(alignment: Alignment.center, children: [
+    return Stack(children: [
       for (TextBox box in textBoxes)
         box
     ],);
@@ -246,8 +246,6 @@ class _DrawingPageState extends State<DrawingPage> {
             buildFreeDrawButton(),
             SizedBox(height: space_between),
             buildLineButton(),
-            SizedBox(height: space_between),
-            buildPointButton(),
             SizedBox(height: space_between),
             buildTextFieldButton(),
             SizedBox(height: space_between),
@@ -520,7 +518,7 @@ class _DrawingPageState extends State<DrawingPage> {
   /*
     * TODO: Unfinished skeleton of the point button.
     */
-  Widget buildPointButton() {
+ /*  Widget buildPointButton() {
     return GestureDetector(
       child: CircleAvatar(
         child: Icon(
@@ -530,7 +528,7 @@ class _DrawingPageState extends State<DrawingPage> {
         ),
       ),
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
