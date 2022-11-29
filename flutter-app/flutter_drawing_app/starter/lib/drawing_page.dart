@@ -202,7 +202,7 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   buildAllTextBoxes() {
-    return Stack(alignment: Alignment.center, children: [
+    return Stack(children: [
       for (TextBox box in textBoxes)
         box
     ],);
