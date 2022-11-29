@@ -268,12 +268,14 @@ class _DrawingPageState extends State<DrawingPage> {
         backgroundColor: selectedColor,
         child: Icon(Icons.straighten),
         onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: const Text("Line Measurement Mode")
+            )
+          );
           setState(() {
             if (displayImage != null) {
-              if (state == Status.line_drawing)
-                state = Status.free_draw;
-              else
-                state = Status.line_drawing;
+              state = Status.line_drawing;
             }
           });
         },
