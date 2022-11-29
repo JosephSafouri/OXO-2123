@@ -245,7 +245,7 @@ class _DrawingPageState extends State<DrawingPage> {
             SizedBox(height: space_between),
             buildLineButton(),
             SizedBox(height: space_between),
-            buildPointButton(),
+            //buildPointButton(),
             SizedBox(height: space_between),
             buildTextFieldButton(),
             SizedBox(height: space_between),
@@ -488,7 +488,7 @@ class _DrawingPageState extends State<DrawingPage> {
   /*
     * TODO: Unfinished skeleton of the point button.
     */
-  Widget buildPointButton() {
+ /*  Widget buildPointButton() {
     return GestureDetector(
       child: CircleAvatar(
         child: Icon(
@@ -498,7 +498,7 @@ class _DrawingPageState extends State<DrawingPage> {
         ),
       ),
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
