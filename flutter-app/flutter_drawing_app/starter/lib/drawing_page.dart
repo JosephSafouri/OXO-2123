@@ -247,8 +247,6 @@ class _DrawingPageState extends State<DrawingPage> {
             SizedBox(height: space_between),
             buildLineButton(),
             SizedBox(height: space_between),
-            //buildPointButton(),
-            SizedBox(height: space_between),
             buildTextFieldButton(),
             SizedBox(height: space_between),
             buildUploadButton(),
