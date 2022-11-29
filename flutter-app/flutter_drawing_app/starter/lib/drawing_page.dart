@@ -480,6 +480,11 @@ class _DrawingPageState extends State<DrawingPage> {
         backgroundColor: selectedColor,
         child: Icon(Icons.draw),
         onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: const Text("Free Drawing Mode")
+              )
+          );
           setState(() {
             if (displayImage != null) {
               state = Status.free_draw;
