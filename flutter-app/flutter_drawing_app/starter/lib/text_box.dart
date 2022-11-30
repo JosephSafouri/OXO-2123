@@ -40,7 +40,6 @@ class _TextBoxState extends State<TextBox> {
   Widget buildTextBox() {
     return SizedBox(
       width: 175.0,
-      height: 2000.0,
       child: TextField(
           style: TextStyle(
               fontSize: 20, color: color, fontWeight: FontWeight.bold),
