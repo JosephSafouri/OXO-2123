@@ -338,11 +338,11 @@ class _DrawingPageState extends State<DrawingPage> {
                               left: (line.path[0].dx +
                                           line.path[line.path.length - 1].dx)
                                       .abs() /
-                                  2 + 10,
+                                  2 + 20,
                               top: (line.path[0].dy +
                                           line.path[line.path.length - 1].dy)
                                       .abs() /
-                                  2 + 10,
+                                  2 + 20,
                               child: Text(findMeasurement(line.path[0],
                                       line.path[line.path.length - 1])
                                   .toString() + " cm",
