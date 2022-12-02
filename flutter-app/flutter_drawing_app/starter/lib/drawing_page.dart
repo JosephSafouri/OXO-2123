@@ -46,7 +46,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Uint8List _image = Uint8List.fromList([0]);
 
   Status state = Status.none;
-  Color selectedColor = Colors.red;
+  Color selectedColor = Colors.black;
   double selectedWidth = 5.0;
 
   // bool strokeWidthIsClicked = false;
@@ -318,7 +318,7 @@ class _DrawingPageState extends State<DrawingPage> {
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
-        backgroundColor: selectedColor,
+        backgroundColor: Colors.black,
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -327,7 +327,7 @@ class _DrawingPageState extends State<DrawingPage> {
           );
           setState(() {
             if (this.displayImage != null)
-              textBoxes.add(TextBox(selectedColor));
+              textBoxes.add(TextBox(Colors.black));
           });
         },
         child: Text('Text'),
@@ -351,16 +351,17 @@ class _DrawingPageState extends State<DrawingPage> {
                       Container(
                           child: Positioned.fill(
                               left: (line.path[0].dx +
-                                  line.path[line.path.length - 1].dx)
-                                  .abs() /
-                                  2,
+                                          line.path[line.path.length - 1].dx)
+                                      .abs() /
+                                  2 + 20,
                               top: (line.path[0].dy +
-                                  line.path[line.path.length - 1].dy)
-                                  .abs() /
-                                  2,
+                                          line.path[line.path.length - 1].dy)
+                                      .abs() /
+                                  2 + 20,
                               child: Text(findMeasurement(line.path[0],
-                                  line.path[line.path.length - 1])
-                                  .toString())))
+                                      line.path[line.path.length - 1])
+                                  .toString() + " cm",
+                              style: new TextStyle(color: Colors.white),)))
                 ],
               ));
         });
