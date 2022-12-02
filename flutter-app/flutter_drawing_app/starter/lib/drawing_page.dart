@@ -386,8 +386,9 @@ class _DrawingPageState extends State<DrawingPage> {
         ),
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: const Text("Undo")
+            SnackBar(
+                  content: const Text("Undo"),
+                  duration: const Duration(milliseconds: 500)
               )
           );
           setState(() {
