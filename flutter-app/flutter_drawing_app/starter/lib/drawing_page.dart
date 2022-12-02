@@ -43,7 +43,6 @@ class _DrawingPageState extends State<DrawingPage> {
   List<TextBox> textBoxes = <TextBox>[];
   DrawnLine line = DrawnLine([], Colors.white, 0, LineType.free_draw);
   ScreenshotController screenshotController = ScreenshotController();
-  Duration duration = new Duration();
 
   Uint8List _image = Uint8List.fromList([0]);
 
