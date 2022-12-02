@@ -38,6 +38,7 @@ class _DrawingPageState extends State<DrawingPage> {
   ImagePicker picker = ImagePicker();
   File? displayImage;
   GlobalKey _globalKey = new GlobalKey();
+  List<Status> actionsStack = <Status>[];
   List<DrawnLine> lines = <DrawnLine>[];
   List<TextBox> textBoxes = <TextBox>[];
   DrawnLine line = DrawnLine([], Colors.white, 0, LineType.free_draw);
@@ -49,6 +50,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Color selectedColor = Colors.black;
   double selectedWidth = 5.0;
 
+  double pixelSizeCm = 0.0099;
   // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
@@ -83,6 +85,7 @@ class _DrawingPageState extends State<DrawingPage> {
   */
   Future<void> clear() async {
     setState(() {
+      //lines.removeLast();
       lines = [];
       line = DrawnLine([], Colors.white, 0, LineType.free_draw);
       textBoxes = [];
@@ -105,6 +108,28 @@ class _DrawingPageState extends State<DrawingPage> {
       setState(() => {this.displayImage = imageTemp, state = Status.free_draw});
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
+    }
+  }
+
+  Future undo(Status recentAction) async {
+    switch(recentAction) {
+      case Status.text_field: {
+        textBoxes.removeLast();
+        print("removing text box");
+      }
+      break;
+      case Status.line_drawing: {
+        if (!lines.isEmpty) {
+          line = DrawnLine([], Colors.white, 0, LineType.free_draw);
+          lines.removeLast();
+          print("removing straight line");
+        }
+      }
+      break;
+
+      default: {
+        print("Nothing to remove");
+      }
     }
   }
 
@@ -170,6 +195,8 @@ class _DrawingPageState extends State<DrawingPage> {
       print('User has ended drawing');
       lines.add(line);
       linesStreamController.add(lines);
+
+      actionsStack.add(Status.line_drawing);
     }
   }
 
@@ -261,6 +288,8 @@ class _DrawingPageState extends State<DrawingPage> {
             SizedBox(height: space_between),
             buildTextFieldButton(),
             SizedBox(height: space_between),
+            buildUndoButton(),
+            SizedBox(height: space_between),
             buildUploadButton(),
             SizedBox(height: space_between),
             buildSaveButton(),
@@ -326,11 +355,41 @@ class _DrawingPageState extends State<DrawingPage> {
               )
           );
           setState(() {
-            if (this.displayImage != null)
-              textBoxes.add(TextBox(Colors.black));
+            if (this.displayImage != null) {
+              textBoxes.add(TextBox(selectedColor));
+              actionsStack.add(Status.text_field);
+            }
           });
         },
         child: Text('Text'),
+      ),
+    );
+  }
+
+  Widget buildUndoButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: selectedColor,
+        child: Icon(
+          Icons.undo,
+          size: 20.0,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: const Text("Undo")
+              )
+          );
+          setState(() {
+            if (this.displayImage != null) {
+              Status recentAction = actionsStack.removeLast();
+              undo(recentAction);
+            }
+          });
+        },
       ),
     );
   }
@@ -401,9 +460,11 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   double findMeasurement(Offset first, Offset second) {
-    double distance =
-    sqrt(pow(first.dx - second.dx, 2) + pow(first.dy - second.dy, 2));
-    return double.parse((distance).toStringAsFixed(2));
+    double numPixels =
+        sqrt(pow(first.dx - second.dx, 2) + pow(first.dy - second.dy, 2));
+    double totalPitchesCm = numPixels * 2 * pixelSizeCm;
+
+    return double.parse((totalPitchesCm).toStringAsFixed(2));
   }
 
   Widget buildColorPicker() {
