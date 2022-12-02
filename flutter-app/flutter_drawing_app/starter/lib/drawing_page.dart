@@ -47,16 +47,16 @@ class _DrawingPageState extends State<DrawingPage> {
   Uint8List _image = Uint8List.fromList([0]);
 
   Status state = Status.none;
-  Color selectedColor = Colors.red;
+  Color selectedColor = Colors.black;
   double selectedWidth = 5.0;
 
   double pixelSizeCm = 0.0099;
   // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
-      StreamController<List<DrawnLine>>.broadcast();
+  StreamController<List<DrawnLine>>.broadcast();
   StreamController<DrawnLine> currentLineStreamController =
-      StreamController<DrawnLine>.broadcast();
+  StreamController<DrawnLine>.broadcast();
 
   /*
   * This will allow the user to be able to save
@@ -214,15 +214,21 @@ class _DrawingPageState extends State<DrawingPage> {
       child: RepaintBoundary(
         child: Container(
           color: Colors.transparent,
-          width: MediaQuery.of(context).size.width * 0.95,
-          height: MediaQuery.of(context).size.height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width * 0.95,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: StreamBuilder<DrawnLine>(
               stream: currentLineStreamController.stream,
               builder: (context, snapshot) {
                 return CustomPaint(
                     painter: Sketcher(
-                  lines: [line],
-                ));
+                      lines: [line],
+                    ));
               }),
         ),
       ),
@@ -234,15 +240,20 @@ class _DrawingPageState extends State<DrawingPage> {
       for (TextBox box in textBoxes)
         box
     ],);
-
   }
 
   Widget buildAllPaths(BuildContext context) {
     return RepaintBoundary(
       key: _globalKey,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.95,
-        height: MediaQuery.of(context).size.height,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width * 0.95,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         child: StreamBuilder<List<DrawnLine>>(
           stream: linesStreamController.stream,
           builder: (context, snapshot) {
@@ -297,9 +308,9 @@ class _DrawingPageState extends State<DrawingPage> {
         child: Icon(Icons.straighten),
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: const Text("Line Measurement Mode")
-            )
+              SnackBar(
+                  content: const Text("Line Measurement Mode")
+              )
           );
           setState(() {
             if (displayImage != null) {
@@ -336,7 +347,7 @@ class _DrawingPageState extends State<DrawingPage> {
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
-        backgroundColor: selectedColor,
+        backgroundColor: Colors.black,
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -388,7 +399,10 @@ class _DrawingPageState extends State<DrawingPage> {
         stream: linesStreamController.stream,
         builder: (context, snapshot) {
           return Container(
-              width: MediaQuery.of(context).size.width * 0.95,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.95,
               child: Stack(
                 children: [
                   for (line in lines)
@@ -398,14 +412,15 @@ class _DrawingPageState extends State<DrawingPage> {
                               left: (line.path[0].dx +
                                           line.path[line.path.length - 1].dx)
                                       .abs() /
-                                  2,
+                                  2 + 20,
                               top: (line.path[0].dy +
                                           line.path[line.path.length - 1].dy)
                                       .abs() /
-                                  2,
+                                  2 + 20,
                               child: Text(findMeasurement(line.path[0],
                                       line.path[line.path.length - 1])
-                                  .toString())))
+                                  .toString() + " cm",
+                              style: new TextStyle(color: Colors.white),)))
                 ],
               ));
         });
@@ -416,24 +431,27 @@ class _DrawingPageState extends State<DrawingPage> {
         stream: currentLineStreamController.stream,
         builder: (context, snapshot) {
           return Container(
-              width: MediaQuery.of(context).size.width * 0.95,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.95,
               child: Stack(
                 children: [
-                  if (line.lineType == LineType.straight) 
+                  if (line.lineType == LineType.straight)
                     Container(
                         child: Positioned.fill(
                             left: ((line.path[0].dx +
-                                        line.path[line.path.length - 1].dx)
-                                    .abs() /
-                                2) + 20 ,
+                                line.path[line.path.length - 1].dx)
+                                .abs() /
+                                2) + 20,
                             top: ((line.path[0].dy +
-                                        line.path[line.path.length - 1].dy)
-                                    .abs() /
+                                line.path[line.path.length - 1].dy)
+                                .abs() /
                                 2) + 20,
                             child: Text(findMeasurement(line.path[0],
-                                    line.path[line.path.length - 1])
+                                line.path[line.path.length - 1])
                                 .toString() + " cm",
-                            style: new TextStyle(color: Colors.white),)
+                              style: new TextStyle(color: Colors.white),)
                         )
                     )
                 ],
@@ -557,13 +575,36 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  DateTime now = new DateTime.now();
+
+  Widget displayCurrentDateTime() {
+    if (displayImage != null) {
+      return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            alignment: Alignment.bottomLeft,
+            child: Text('${now.year}-${now.month}-${now.day} ${now.hour}:${now
+                .minute}:${now.second}',
+                style: TextStyle(fontSize: 15, color: Colors.grey)),
+          )
+      );
+    }
+    return Container(
+      child: Center(
+          child: Text('Upload an Image!', style: TextStyle(fontSize: 25))),
+    );
+  }
+
+
+
   Widget determineDisplayContent(double width, double height) {
     if (displayImage != null) {
       if (kIsWeb) {
         return Container(
             width: 0.95 *
                 width, //setting picture to take up 95 percent of the screen to leave room for the toolbar
-            child: Image.network(displayImage!.path, fit: BoxFit.fill));
+            child: Image.network(displayImage!.path, fit: BoxFit.fill)
+        );
       } else {
         return Container(
             width: 0.95 * width,
@@ -609,6 +650,7 @@ class _DrawingPageState extends State<DrawingPage> {
                     child: Stack(
                       children: [
                         determineDisplayContent(_width, _height),
+                        displayCurrentDateTime(),
                         buildMeasurementView(context),
                         buildCurrentMeasurementView(context),
                         buildAllPaths(context),
