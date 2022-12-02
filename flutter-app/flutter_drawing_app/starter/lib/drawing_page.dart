@@ -207,6 +207,13 @@ class _DrawingPageState extends State<DrawingPage> {
 
   Widget buildCurrentPath(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
       onPanStart: beginLineDraw,
       onPanUpdate: lineDrawUpdate,
       onPanEnd: lineDrawEnd,
