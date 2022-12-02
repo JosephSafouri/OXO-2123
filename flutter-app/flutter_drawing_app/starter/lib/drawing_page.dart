@@ -46,7 +46,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Uint8List _image = Uint8List.fromList([0]);
 
   Status state = Status.none;
-  Color selectedColor = Colors.red;
+  Color selectedColor = Colors.black;
   double selectedWidth = 5.0;
   // bool strokeWidthIsClicked = false;
 
@@ -306,7 +306,7 @@ class _DrawingPageState extends State<DrawingPage> {
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
-        backgroundColor: selectedColor,
+        backgroundColor: Colors.black,
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -315,7 +315,7 @@ class _DrawingPageState extends State<DrawingPage> {
           );
           setState(() {
             if (this.displayImage != null)
-              textBoxes.add(TextBox(selectedColor));
+              textBoxes.add(TextBox(Colors.black));
           });
         },
         child: Text('Text'),
