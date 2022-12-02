@@ -38,6 +38,7 @@ class _DrawingPageState extends State<DrawingPage> {
   ImagePicker picker = ImagePicker();
   File? displayImage;
   GlobalKey _globalKey = new GlobalKey();
+  List<Status> actionsStack = <Status>[];
   List<DrawnLine> lines = <DrawnLine>[];
   List<TextBox> textBoxes = <TextBox>[];
   DrawnLine line = DrawnLine([], Colors.white, 0, LineType.free_draw);
@@ -110,6 +111,28 @@ class _DrawingPageState extends State<DrawingPage> {
     }
   }
 
+  Future undo(Status recentAction) async {
+    switch(recentAction) {
+      case Status.text_field: {
+        textBoxes.removeLast();
+        print("removing text box");
+      }
+      break;
+      case Status.line_drawing: {
+        if (!lines.isEmpty) {
+          line = DrawnLine([], Colors.white, 0, LineType.free_draw);
+          lines.removeLast();
+          print("removing straight line");
+        }
+      }
+      break;
+
+      default: {
+        print("Nothing to remove");
+      }
+    }
+  }
+
   /*
   * This method allows the user to begin drawing a line by
   * using two variables which track the user's input and
@@ -172,6 +195,8 @@ class _DrawingPageState extends State<DrawingPage> {
       print('User has ended drawing');
       lines.add(line);
       linesStreamController.add(lines);
+
+      actionsStack.add(Status.line_drawing);
     }
   }
 
@@ -252,6 +277,8 @@ class _DrawingPageState extends State<DrawingPage> {
             SizedBox(height: space_between),
             buildTextFieldButton(),
             SizedBox(height: space_between),
+            buildUndoButton(),
+            SizedBox(height: space_between),
             buildUploadButton(),
             SizedBox(height: space_between),
             buildSaveButton(),
@@ -317,11 +344,41 @@ class _DrawingPageState extends State<DrawingPage> {
               )
           );
           setState(() {
-            if (this.displayImage != null)
+            if (this.displayImage != null) {
               textBoxes.add(TextBox(selectedColor));
+              actionsStack.add(Status.text_field);
+            }
           });
         },
         child: Text('Text'),
+      ),
+    );
+  }
+
+  Widget buildUndoButton() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: selectedColor,
+        child: Icon(
+          Icons.undo,
+          size: 20.0,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: const Text("Undo")
+              )
+          );
+          setState(() {
+            if (this.displayImage != null) {
+              Status recentAction = actionsStack.removeLast();
+              undo(recentAction);
+            }
+          });
+        },
       ),
     );
   }
