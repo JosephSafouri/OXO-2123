@@ -391,10 +391,8 @@ class _DrawingPageState extends State<DrawingPage> {
               )
           );
           setState(() {
-            if (actionsStack.isEmpty) {
-              return;
-            }
-            if (this.displayImage != null) {
+
+            if (this.displayImage != null && !actionsStack.isEmpty) {
               Status recentAction = actionsStack.removeLast();
               undo(recentAction);
             }
