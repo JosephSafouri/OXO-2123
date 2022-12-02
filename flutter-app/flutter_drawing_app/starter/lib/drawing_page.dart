@@ -338,14 +338,16 @@ class _DrawingPageState extends State<DrawingPage> {
                               left: (line.path[0].dx +
                                           line.path[line.path.length - 1].dx)
                                       .abs() /
-                                  2,
+                                  2 + 20,
                               top: (line.path[0].dy +
                                           line.path[line.path.length - 1].dy)
                                       .abs() /
-                                  2,
+                                  2 + 20,
                               child: Text(findMeasurement(line.path[0],
                                       line.path[line.path.length - 1])
-                                  .toString())))
+                                  .toString() + " cm",
+                              style: new TextStyle(color: Colors.white),)))
+
                 ],
               ));
         });
@@ -359,7 +361,7 @@ class _DrawingPageState extends State<DrawingPage> {
               width: MediaQuery.of(context).size.width * 0.95,
               child: Stack(
                 children: [
-                  if (line.lineType == LineType.straight) 
+                  if (line.lineType == LineType.straight)
                     Container(
                         child: Positioned.fill(
                             left: ((line.path[0].dx +
