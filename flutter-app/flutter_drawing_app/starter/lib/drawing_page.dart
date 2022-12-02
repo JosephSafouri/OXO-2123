@@ -48,6 +48,8 @@ class _DrawingPageState extends State<DrawingPage> {
   Status state = Status.none;
   Color selectedColor = Colors.red;
   double selectedWidth = 5.0;
+
+  double pixelSizeCm = 0.0099;
   // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
@@ -82,6 +84,7 @@ class _DrawingPageState extends State<DrawingPage> {
   */
   Future<void> clear() async {
     setState(() {
+      //lines.removeLast();
       lines = [];
       line = DrawnLine([], Colors.white, 0, LineType.free_draw);
       textBoxes = [];
@@ -382,9 +385,11 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   double findMeasurement(Offset first, Offset second) {
-    double distance =
+    double numPixels =
         sqrt(pow(first.dx - second.dx, 2) + pow(first.dy - second.dy, 2));
-    return double.parse((distance).toStringAsFixed(2));
+    double totalPitchesCm = numPixels * 2 * pixelSizeCm;
+
+    return double.parse((totalPitchesCm).toStringAsFixed(2));
   }
 
   Widget buildColorPicker() {
