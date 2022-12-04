@@ -51,7 +51,6 @@ class _DrawingPageState extends State<DrawingPage> {
   double selectedWidth = 5.0;
 
   double pixelSizeCm = 0.0099;
-  // bool strokeWidthIsClicked = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
   StreamController<List<DrawnLine>>.broadcast();
@@ -92,7 +91,6 @@ class _DrawingPageState extends State<DrawingPage> {
   */
   Future<void> clear() async {
     setState(() {
-      //lines.removeLast();
       lines = [];
       line = DrawnLine([], Colors.white, 0, LineType.free_draw);
       textBoxes = [];
@@ -528,7 +526,6 @@ class _DrawingPageState extends State<DrawingPage> {
                           onChanged: (double value) {
                             state(() {
                               selectedWidth = value;
-                              // selectedWidth = value;
                             });
                           },
                         );
