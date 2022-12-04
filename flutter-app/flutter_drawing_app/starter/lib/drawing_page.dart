@@ -276,13 +276,13 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   Widget buildToolbar() {
-    double space_between = 10;
+    double space_between = 25;
     return Positioned(
-      top: 180,
-      right: 10,
+      top: 150,
+      right: 2,
       child: Container(
-        padding: const EdgeInsets.all(10.0),
-        color: Colors.grey,
+        padding: const EdgeInsets.all(5.0),
+        color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
