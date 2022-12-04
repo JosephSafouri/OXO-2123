@@ -380,6 +380,10 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
+  /*
+  This widget creates an undo 
+  button for the undo feature
+  */
 
   Widget buildUndoButton() {
     return Padding(
