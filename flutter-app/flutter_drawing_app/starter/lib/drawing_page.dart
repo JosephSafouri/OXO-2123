@@ -70,6 +70,13 @@ class _DrawingPageState extends State<DrawingPage> {
     if (this.displayImage == null) {
       return;
     }
+     //onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: const Text("Saved!"),
+                  duration: const Duration(milliseconds: 500)
+              )
+          );
     print("User saved the image");
     await screenshotController.capture().then((image) => {_image = image!});
     await ImageGallerySaver.saveImage(
@@ -537,7 +544,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget buildSaveButton() {
     return FloatingActionButton(
       mini: true,
-      onPressed: save,
+      onPressed: save, 
       child: CircleAvatar(
         child: Icon(
           Icons.save,
@@ -545,6 +552,7 @@ class _DrawingPageState extends State<DrawingPage> {
           color: Colors.white,
         ),
       ),
+      
     );
   }
 
