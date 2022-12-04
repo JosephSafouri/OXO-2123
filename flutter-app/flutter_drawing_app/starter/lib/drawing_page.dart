@@ -513,7 +513,7 @@ class _DrawingPageState extends State<DrawingPage> {
                           value: selectedWidth,
                           min: 1,
                           max: 10,
-                          divisions: 10,
+                          divisions: 9,
                           label: selectedWidth.round().toString(),
                           onChanged: (double value) {
                             state(() {
