@@ -372,10 +372,7 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
- /*
-  This is the button widget for the undo button feature.
-  It is aded on the toolbar to allow users to under a recent action.
-  */
+
   Widget buildUndoButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
