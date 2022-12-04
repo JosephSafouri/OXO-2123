@@ -372,7 +372,10 @@ class _DrawingPageState extends State<DrawingPage> {
       ),
     );
   }
-
+ /*
+  This is the button widget for the undo button feature.
+  It is aded on the toolbar to allow users to under a recent action.
+  */
   Widget buildUndoButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -402,6 +405,12 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  /*
+  This widget displays an accurate measurement of the line
+  that was being drawn. It displays the size in realtime before
+  the line is completely drawn out. It calls a function that does the
+  calculation within this widget.
+   */
   Widget buildMeasurementView(BuildContext context) {
     return StreamBuilder(
         stream: linesStreamController.stream,
@@ -434,6 +443,10 @@ class _DrawingPageState extends State<DrawingPage> {
         });
   }
 
+  /*
+  This is a widget sets the line in the stack and keeps a
+  measurement about the fully finished line that was drawn.
+   */
   Widget buildCurrentMeasurementView(BuildContext context) {
     return StreamBuilder(
         stream: currentLineStreamController.stream,
@@ -467,6 +480,10 @@ class _DrawingPageState extends State<DrawingPage> {
         });
   }
 
+  /*
+  Finds a semi-accurate measurement of the distance but doesn't use pixel-pitch.
+  This means that if the image is slightly titled at an angle, it will not be accurate.
+   */
   double findMeasurement(Offset first, Offset second) {
     double numPixels =
         sqrt(pow(first.dx - second.dx, 2) + pow(first.dy - second.dy, 2));
@@ -486,6 +503,11 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  /*
+  This widget is for the color picking feature. It is a button on
+  the toolbar that once clicked, it'll show you a variety of colors to
+  choose from as well as a size to draw with.
+   */
   Widget buildColorPickerButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -533,6 +555,10 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  /*
+  Builds a button that allows the user to save
+  their  current state to their gallary once pressed.
+   */
   Widget buildSaveButton() {
     return FloatingActionButton(
       mini: true,
@@ -547,6 +573,10 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  /*
+  This button allows the user to clear the state
+  when you tap on the button.
+   */
   Widget buildClearButton() {
     return GestureDetector(
       onTap: clear,
@@ -560,6 +590,10 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
+  /*
+  Button that allows the user to put himself/herself
+  into a free drawing mode.
+   */
   Widget buildFreeDrawButton() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
