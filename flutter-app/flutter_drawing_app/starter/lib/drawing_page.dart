@@ -110,7 +110,10 @@ class _DrawingPageState extends State<DrawingPage> {
       print('Failed to pick image: $e');
     }
   }
-
+  /*
+  This allows the user to user to undo the 
+  last change made to the canvas.
+  */
   Future undo(Status recentAction) async {
     switch(recentAction) {
       case Status.text_field: {
