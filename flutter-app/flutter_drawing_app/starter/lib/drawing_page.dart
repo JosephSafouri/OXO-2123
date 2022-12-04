@@ -629,21 +629,6 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  /*
-    * TODO: Unfinished skeleton of the point button.
-    */
- /*  Widget buildPointButton() {
-    return GestureDetector(
-      child: CircleAvatar(
-        child: Icon(
-          Icons.add_circle,
-          size: 20.0,
-          color: Colors.white,
-        ),
-      ),
-    );
-  } */
-
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
