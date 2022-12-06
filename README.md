@@ -135,4 +135,7 @@ After running these commands, flutter should automatically download all necessar
     <li> Straight line drawing needs to be implemented </li>
 </ul>
 
+##Troubleshooting
+If there are any Flutter errors that occur during installation, then run ‘flutter doctor’. This command checks your environment and will display a report of the status of your Flutter installation.  
+
 
