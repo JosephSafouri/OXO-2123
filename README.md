@@ -9,15 +9,51 @@ Damian Patel </br>
 Sarah Ukani </br>
 Praharsh Patel </br>
 
-#### Instructions to run app
+## Instructions to run app
+
+### Prerequisites
 - [Install Flutter](https://docs.flutter.dev/get-started/install)
 - Use [Mac Installation Guide](https://docs.flutter.dev/get-started/install/macos) or [Windows Installation Guide](https://docs.flutter.dev/get-started/install/windows)
-- Note that Android Studio is not needed to just run the app
-- Pull main branch from repository
-- cd into the `flutter-app/flutter_drawing_app/starter/` directory and run `flutter run` in the command line
-- Chrome tab should open up and display the running app
+- Preferably have an Android device
+- Note that Android Studio is not needed to just run the app, but running the app is much easier this way.
+
+### Dependent Libraries
+Depedencies are specificied in the pubspec.yaml file so no external downloads will be required. To acquire the dependencies specified in the file follow these instructions:
+1. cd into `path/to/flutter-app/flutter-drawing-app/starter/`
+2. Run `flutter pub get`
+3. Run `flutter pub updgrade`
+
+After running these commands, flutter should automatically download all necessary dependencies.
+
+### Running the application
+-Connect your Android device to your computer 
+-In your Android device, enable developer mode and then enable USB debugging. 
+-Open Android Studio and open the devices tab 
+-Click the physical tab and ensure that your device is appearing 
+-Select your device for running 
+-Run the app! 
 
 # Release Notes
+## Version 0.5.0
+### Features
+<ul>
+    <li> Implemented feature to use pixel pitch and pixel coordinates to find accurate measurements for straight line drawing.</li>
+    <li>Added feature to create multiple text boxes and allow them to be dragged. <li>
+</ul>
+
+### Bug Fixes
+<ul>
+    <li> Fixed toolbar so that different options are not overlapping and allows user much more screen space to draw on. </li>
+    <li> Fixed problem where text was not wrapping when users inputted multiple characters into the textbox. </li>
+    <li> Fixed issue where toolbar would shift back and worth depending on whether a text box was visible. <li>
+</ul>
+
+### Known Issues
+<ul>
+    <li> Multiple fingers on the screen causes unexpected behavior when drawing. </li>
+    <li >Measurements currently do not use magnification to find distance but rather the resolution and metadata of the screen.  </li>
+</ul>
+
 ## Version 0.4.0
 ### Features
 <ul>
