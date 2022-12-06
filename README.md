@@ -26,26 +26,27 @@ Depedencies are specificied in the pubspec.yaml file so no external downloads wi
 After running these commands, flutter should automatically download all necessary dependencies.
 
 ### Running the application
--Connect your Android device to your computer 
--In your Android device, enable developer mode and then enable USB debugging. 
--Open Android Studio and open the devices tab 
--Click the physical tab and ensure that your device is appearing 
--Select your device for running 
--Run the app! 
+1. Connect your Android device to your computer 
+1. In your Android device, enable developer mode and then enable USB debugging. 
+2. Clone the repository into your desired directory.
+3. Open the project in Android Studio and open the devices tab. 
+4. Click the physical tab and ensure that your device is appearing 
+5. Select your device for running 
+6. Run the app! 
 
 # Release Notes
 ## Version 0.5.0
 ### Features
 <ul>
     <li> Implemented feature to use pixel pitch and pixel coordinates to find accurate measurements for straight line drawing.</li>
-    <li>Added feature to create multiple text boxes and allow them to be dragged. <li>
+    <li>Added feature to create multiple text boxes and allow them to be dragged. </li>
 </ul>
 
 ### Bug Fixes
 <ul>
     <li> Fixed toolbar so that different options are not overlapping and allows user much more screen space to draw on. </li>
     <li> Fixed problem where text was not wrapping when users inputted multiple characters into the textbox. </li>
-    <li> Fixed issue where toolbar would shift back and worth depending on whether a text box was visible. <li>
+    <li> Fixed issue where toolbar would shift back and worth depending on whether a text box was visible. </li>
 </ul>
 
 ### Known Issues
